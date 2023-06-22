@@ -6,7 +6,7 @@ pipeline {
       steps {
         script {
           // Change directory to the repository
-          dir('repo') {
+          dir('test') {
             // Retrieve the latest commit hash
             def latestCommit = bat(script: 'git rev-parse HEAD', returnStdout: true).trim()
 
