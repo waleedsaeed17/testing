@@ -6,8 +6,9 @@ pipeline {
         stage('Diff Files') {
             steps {
                 script {
-                    def diffCmd = "fc /W /N script.txt change.txt > final.txt"
-                    bat diffCmd
+                   // def diffCmd = "fc /W /N script.txt change.txt > final.txt"
+                    bat "diff script.txt change.txt > final.txt"
+                   
                 }
             }
         }
