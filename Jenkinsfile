@@ -2,11 +2,18 @@ pipeline {
   agent any
 
   stages {
+    stage('Checkout') {
+      steps {
+        // Checkout the repository
+        bat 'git clone https://github.com/waleedsaeed17/testing.git'
+      }
+    }
+
     stage('Get Commit Changes') {
       steps {
         script {
           // Change directory to the repository
-          dir('test') {
+          dir('testing') {
             // Retrieve the latest commit hash
             def latestCommit = bat(script: 'git rev-parse HEAD', returnStdout: true).trim()
 
