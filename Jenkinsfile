@@ -7,7 +7,7 @@ stages{
             steps {
                 script {
                     // Define the file path and commit references
-                    def filePath = 'path\\to\\your\\file'
+                    def filePath = 'D:\\Tools\\jenkins-agent\\workspace\\test\\script.txt'
                     def previousCommit = bat(script: 'git rev-parse HEAD~1', returnStdout: true).trim()
                     def currentCommit = bat(script: 'git rev-parse HEAD', returnStdout: true).trim()
                     
