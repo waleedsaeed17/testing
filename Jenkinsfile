@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'Server138 ' }
+    agent { label ' Node138-2 ' }
 
     stages {
         stage('Git Diff') {
