@@ -11,7 +11,7 @@ pipeline {
             def latestCommit = bat(script: 'git rev-parse HEAD', returnStdout: true).trim()
 
             // Retrieve the new commit hashes
-            def commitHashes = bat(script: "git log --pretty=format:\"%h\" ${latestCommit}..HEAD", returnStdout: true).trim().split('\n')
+            def commitHashes = bat(script: "git log --pretty=format:\"%h\" \"${latestCommit}..HEAD\"", returnStdout: true).trim().split('\r\n')
 
             // Initialize the commit content variable
             def commitContent = ""
