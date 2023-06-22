@@ -11,13 +11,5 @@ pipeline {
                 }
             }
         }
-        stage('Print Diff') {
-            steps {
-                script {
-                    def changeFile = readFile 'final.txt'
-                    echo "Diff Output:\n${changeFile}"
-                }
-            }
-        }
     }
 }
