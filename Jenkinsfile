@@ -1,9 +1,14 @@
 pipeline {
-    
     agent { label 'ServerVM ' }
-
-stages{
-        stage('Stopping Tomcat svc'){
+    
+    stages {
+        stage('Clone Repository') {
+            steps {
+                bat 'git clone https://github.com/waleedsaeed17/testing.git'
+            }
+        }
+        
+        stage('Compare and Extract Changes') {
             steps {
                 script {
                     // Define the file path
@@ -24,10 +29,7 @@ stages{
                     // Save the diff output to a file
                     writeFile file: 'changes.txt', text: diffOutput
                 }
-
             }
-
         }
-
     }
 }
