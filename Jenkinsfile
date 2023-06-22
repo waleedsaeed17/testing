@@ -2,7 +2,6 @@ pipeline {
   agent any
 
   stages {
-      
     stage('Get Commit Changes') {
       steps {
         script {
