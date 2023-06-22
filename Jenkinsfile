@@ -1,5 +1,5 @@
 pipeline {
-  agent { label 'ServerVM ' } 
+  agent any
 
   stages {
     stage('Checkout') {
