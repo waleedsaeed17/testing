@@ -2,33 +2,24 @@ pipeline {
     agent {
         label 'ServerVM'
     }
+
     stages {
         stage('Checkout') {
             steps {
+                // Checkout the source code
                 checkout scm
             }
         }
-        stage('Extract Commits') {
+
+        stage('Retrieve Latest Commit') {
             steps {
+                // Get the latest commit ID and message for the file
                 script {
-                    def fileToCheck = 'script.txt' // Update with the actual path to your file
-                    def outputFile = 'change.txt' // Update with the desired output file name
+                    def latestCommit = bat(returnStdout: true, script: "git log -n 1 --format=format:'%H' -- script.txt").trim()
+                    def latestCommitMessage = bat(returnStdout: true, script: "git log -n 1 --format=format:'%s' -- script.txt").trim()
                     
-                    // Retrieve the latest commit hash for the specified file
-                    def latestCommit = bat(
-                        script: "git log -n 1 --format=format:%H -- ${fileToCheck}",
-                        returnStdout: true
-                    ).trim()
-                    
-                    // Retrieve the commit details for the latest commit of the specified file
-                    def changelog = bat(
-                        script: "git log --format=format:\"%h %s%n%b\" ${latestCommit} -- ${fileToCheck}",
-                        returnStdout: true
-                    ).trim()
-                    
-                    writeFile file: outputFile, text: changelog
-                    
-                    echo "Changelog for new commits of ${fileToCheck} has been written to ${outputFile}"
+                    // Write the commit data to a file
+                    writeFile file: 'change.txt', text: "Latest Commit: ${latestCommit}\nMessage: ${latestCommitMessage}"
                 }
             }
         }
