@@ -1,30 +1,26 @@
 pipeline {
     agent {label 'ServerVM'}
-    
+
     stages {
-        stage('Prepare Workspace') {
-            steps {
-                // Create a workspace directory
-                bat 'mkdir workspace'
-                
-                // Copy the files to be compared to the workspace directory
-                bat 'copy "script.txt" workspace\\script.txt'
-                bat 'copy "change.txt" workspace\\change.txt'
-            }
-        }
-        
         stage('Compare Files') {
             steps {
-                // Run WinMerge to compare the files
-                bat 'winmergeu.exe /r /e /u /wl "workspace\\script.txt" "workspace\\change.txt"'
-            }
-        }
-        
-        stage('Capture Changes') {
-            steps {
-                // Copy the changed data to another file
-                bat 'echo. > workspace\\final.txt'
-                bat 'winmergeu.exe /s "workspace\\script.txt" "workspace\\change.txt" /r /e /u /wl /minimize /maximize /dl "Base" /dr "Mine" /lefttitle "Original" /righttitle "Modified" /mergeoutput "workspace\\final.txt"'
+                script {
+                    // Define the file paths
+                    def file1Path = 'script.txt'
+                    def file2Path = 'change.txt'
+                    def finalFilePath = 'final.txt'
+
+                    // Run WinMerge to compare the files
+                    bat "\"C:\\Program Files\\WinMerge\\WinMergeU.exe\" /e /u /wl /maximize \"${file1Path}\" \"${file2Path}\""
+
+                    // Save the WinMerge output to a file
+                    bat "echo ^>^>^> WinMerge ^>^>^> ${finalFilePath}"
+                    bat "echo. >> ${finalFilePath}"
+                    bat "type WinMerge.log >> ${finalFilePath}"
+
+                    // Print the content of the final file
+                    bat "type ${finalFilePath}"
+                }
             }
         }
     }
