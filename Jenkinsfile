@@ -3,11 +3,6 @@ pipeline {
         label 'ServerVM'
     }
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
         stage('Extract Commits') {
             steps {
                 script {
