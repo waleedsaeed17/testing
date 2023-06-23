@@ -4,12 +4,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                // Checkout the source code
-                checkout scm
-            }
-        }
 
         stage('Retrieve Latest Commit') {
             steps {
