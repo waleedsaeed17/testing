@@ -1,16 +1,17 @@
 pipeline {
     agent {
-        label 'ServerVM'
+        label "ServerVM"
     }
     stages {
-        stage('Compare Files') {
+        stage("Compare files") {
             steps {
-                bat '"C:\\Program Files\\WinMerge\\WinMergeU.exe" file1.txt file2.txt /r /u /wl /e /wl /wr /n /x'
-            }
-        }
-        stage('Save Differences') {
-            steps {
-                bat 'echo off > final.txt && fc /n script.txt change.txt >> final.txt'
+                script {
+                    def file1 = "script.txt"
+                    def file2 = "change.txt"
+                    def winmergePath = "C:\\Program Files\\WinMerge\\winmerge.exe"
+                    def deltaPath = "final.txt"
+                    sh "${winmergePath} ${file1} ${file2} /o ${deltaPath}"
+                }
             }
         }
     }
