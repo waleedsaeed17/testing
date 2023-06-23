@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label "ServerVM"
+        label "windows"
     }
     stages {
         stage("Compare files") {
@@ -22,7 +22,7 @@ pipeline {
 
                     writeFile(
                         file: "output.txt",
-                        content: "${httpResponse.content}"
+                        text: "${httpResponse.content}"
                     )
                 }
             }
