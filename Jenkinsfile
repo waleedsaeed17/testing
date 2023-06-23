@@ -1,42 +1,31 @@
 pipeline {
-    agent {label 'ServerVM'}
+    agent any
     
     stages {
+        stage('Prepare Workspace') {
+            steps {
+                // Create a workspace directory
+                bat 'mkdir workspace'
+                
+                // Copy the files to be compared to the workspace directory
+                bat 'copy "script.txt" workspace\\script.txt'
+                bat 'copy "change.txt" workspace\\change.txt'
+            }
+        }
+        
         stage('Compare Files') {
             steps {
-                script {
-                    // Set the paths to the files
-                    def originalFile = "script.txt"
-                    def modifiedFile = "change.txt"
-                    def finalFile = "final.txt"
-                    
-                    // Read the contents of the original file
-                    def originalContent = readFile file: originalFile
-                    
-                    // Read the contents of the modified file
-                    def modifiedContent = readFile file: modifiedFile
-                    
-                    // Compare the files' data
-                    def diffResult = diffFiles(originalContent, modifiedContent)
-                    
-                    // Create a new file to store the differences
-                    def finalOutput = new File(finalFile)
-                    
-                    // Write the differences to the new file
-                    finalOutput.write(diffResult)
-                }
+                // Run WinMerge to compare the files
+                bat 'winmergeu.exe /r /e /u /wl "workspace\\script.txt" "workspace\\change.txt"'
+            }
+        }
+        
+        stage('Capture Changes') {
+            steps {
+                // Copy the changed data to another file
+                bat 'echo. > workspace\\final.txt'
+                bat 'winmergeu.exe /s "workspace\\script.txt" "workspace\\change.txt" /r /e /u /wl /minimize /maximize /dl "Base" /dr "Mine" /lefttitle "Original" /righttitle "Modified" /mergeoutput "workspace\\final.txt"'
             }
         }
     }
-}
-
-def diffFiles(original, modified) {
-    // Use a diff library or tool to compare the files' data and extract differences
-    // Replace this with the appropriate diff library or command-line tool for your needs
-    // Here's an example using the WinMerge command-line tool
-    def diffCommand = "C:/Program Files/WinMerge/WinMergeU.exe /e /u /wl /wr /dl 'Original' /dr 'Modified' '${original}' '${modified}'"
-    def diffResult = bat(returnStdout: true, script: diffCommand)
-    
-    // Return the differences
-    return diffResult
 }
