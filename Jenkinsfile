@@ -6,18 +6,27 @@ pipeline {
     stages {
         stage('Compare Files') {
             steps {
-                // Define the file paths to be compared
-                def file1 = 'script.txt'
-                def file2 = 'change.txt'
-                
-                // Define the path for WinMerge executable
-                def winmergePath = 'C:\\Program Files\\WinMerge\\WinMergeU.exe'
-                
-                // Define the path for delta.txt file
-                def deltaFile = 'C:\\delta.txt'
-                
-                // Run WinMerge to compare files and generate delta.txt
-                bat "\"${winmergePath}\" /e /u /wl /wr /dl \"File1\" /dr \"File2\" \"${file1}\" \"${file2}\" \"${deltaFile}\""
+                script {
+                    // Path to the WinMerge executable
+                    def winmergePath = "C:\\Program Files\\WinMerge\\WinMergeU.exe"
+                    
+                    // Path to the files to be compared
+                    def file1 = "script.txt"
+                    def file2 = "change.txt"
+                    
+                    // Path to the output text file
+                    def outputFile = "final.txt"
+                    
+                    // Run WinMerge to compare the files
+                    bat "\"${winmergePath}\" /r /e /s /u /wl /maximize \"${file1}\" \"${file2}\""
+                    
+                    // Read the output from WinMerge and extract unique data from the second file
+                    def winmergeOutput = readFile(file: "${outputFile}", encoding: 'UTF-8')
+                    def uniqueData = winmergeOutput.readLines().findAll { line -> line.startsWith("=>") }.collect { line -> line.substring(3) }
+                    
+                    // Write the unique data to a new text file
+                    writeFile file: 'delta.txt', text: uniqueData.join('\n')
+                }
             }
         }
     }
