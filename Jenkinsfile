@@ -5,7 +5,7 @@ pipeline {
     stages {
         stage('Compare Files') {
             steps {
-                bat 'C:\\Program Files\\WinMerge\\WinMergeU.exe script.txt change.txt /r /u /wl /e /wl /wr /n'
+                bat '"C:\\Program Files\\WinMerge\\WinMergeU.exe" file1.txt file2.txt /r /u /wl /e /wl /wr /n'
             }
         }
         stage('Save Differences') {
