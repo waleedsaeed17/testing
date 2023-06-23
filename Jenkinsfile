@@ -3,16 +3,12 @@ pipeline {
         label "ServerVM"
     }
     stages {
-        stage("Compare files") {
+        stage("Start a process") {
             steps {
-                script {
-                    def file1 = "script.txt"
-                    def file2 = "change.txt"
-                    def winmergePath = "C:\\Program Files\\WinMerge\\WinMergeU.exe"
-                    //def deltaPath = "final.txt"
-                    //start "${winmergePath} ${file1} ${file2} /o ${deltaPath}"
-                    command: "cmd /c start ${winmergePath} ${file1} ${file2} /o final.txt"
-                }
+                durableTask(
+                    id: "my-task",
+                    command: "cmd /c start C:\\Program Files\\WinMerge\\WinMergeU.exe script.txt change.txt /o final.txt"
+                )
             }
         }
     }
