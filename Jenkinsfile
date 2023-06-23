@@ -3,6 +3,11 @@ pipeline {
         label 'ServerVM'
     }
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
         stage('Extract Commits') {
             steps {
                 script {
@@ -11,13 +16,13 @@ pipeline {
                     
                     // Retrieve the latest commit hash for the specified file
                     def latestCommit = bat(
-                        script: "git log -n 1 --format=format:%H --follow ${fileToCheck}",
+                        script: "git log -n 1 --format=format:%H -- ${fileToCheck}",
                         returnStdout: true
                     ).trim()
                     
                     // Retrieve the commit details for the latest commit of the specified file
                     def changelog = bat(
-                        script: "git log --format=format:\"%h %s%n%b\" ${latestCommit} --follow ${fileToCheck}",
+                        script: "git log --format=format:\"%h %s%n%b\" ${latestCommit} -- ${fileToCheck}",
                         returnStdout: true
                     ).trim()
                     
