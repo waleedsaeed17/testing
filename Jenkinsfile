@@ -10,7 +10,7 @@ pipeline {
                     def file2 = "change.txt"
                     def winmergePath = "C:\\Program Files\\WinMerge\\WinMergeU.exe"
                     def deltaPath = "final.txt"
-                    sh "${winmergePath} ${file1} ${file2} /o ${deltaPath}"
+                    start "${winmergePath} ${file1} ${file2} /o ${deltaPath}"
                 }
             }
         }
