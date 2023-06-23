@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label "windows"
+        label "ServerVM"
     }
     stages {
         stage("Compare files") {
