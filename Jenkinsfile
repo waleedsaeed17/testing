@@ -6,7 +6,7 @@ pipeline {
       steps {
         script {
           // Specify the file path
-          def filePath = 'D:\\jenkins_agent\\workspace\\test'
+          def filePath = 'D:\\jenkins_agent\\workspace\\test\\script.txt'
 
           // Get the timestamp of the last successful build
           def lastBuildTimestamp = null
