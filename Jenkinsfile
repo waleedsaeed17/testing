@@ -1,26 +1,27 @@
 pipeline {
-    agent {label 'sys'}
-    
-    stages {        
+    agent {
+        label 'sys'
+    }
+    stages {
         stage('Extract Changes') {
             steps {
                 script {
-                    // Get the commit ID of the last successful build
-                    def lastSuccessfulCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+                    def previousCommit = sh(returnStdout: true, script: 'git rev-parse HEAD^').trim()
+                    def currentCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+                    def changedFiles = sh(returnStdout: true, script: "git diff --name-only ${previousCommit} ${currentCommit}").trim().split('\n')
                     
-                    // Get the commit ID of the latest commit
-                    def latestCommit = sh(returnStdout: true, script: 'git rev-parse HEAD^').trim()
+                    // Specify the file you want to extract changes from
+                    def targetFile = 'D:\\jenkins_agent\\workspace\\test'
                     
-                    // Get the changed files between the last successful commit and the latest commit
-                    def changedFiles = sh(returnStdout: true, script: "git diff --name-only ${lastSuccessfulCommit} ${latestCommit}").trim().split('\n')
-                    
-                    // Extract changes for the specific file
-                    def filePath = 'D:\\jenkins_agent\\workspace\\test\\script.txt'
-                    
-                    if (changedFiles.contains(filePath)) {
-                        sh "git show ${latestCommit}:${filePath} > extracted_changes.txt"
+                    if (changedFiles.contains(targetFile)) {
+                        // Extract the changes from the target file
+                        def extractedChanges = sh(returnStdout: true, script: "git diff ${previousCommit} ${currentCommit} -- ${targetFile}")
+                        echo "Extracted Changes:\n${extractedChanges}"
+                        
+                        // Further processing of extracted changes
+                        // ...
                     } else {
-                        echo "No changes detected in ${filePath}"
+                        echo "No changes found in ${targetFile}"
                     }
                 }
             }
