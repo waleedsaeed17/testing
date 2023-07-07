@@ -1,49 +1,29 @@
-import hudson.model.*
-
 pipeline {
-  agent any
-
-  stages {
-    stage('Retrieve New Commits') {
-      steps {
-        script {
-          // Specify the file path
-          def filePath = 'D:\\jenkins_agent\\workspace\\test\\scipt.txt'
-
-          // Get the timestamp of the last successful build
-          def lastBuildTimestamp = null
-          def lastSuccessfulBuild = getPreviousSuccessfulBuild()
-          if (lastSuccessfulBuild != null) {
-            lastBuildTimestamp = lastSuccessfulBuild.getTimeInMillis().toString()
-          }
-
-          // Use the 'git log' command with the '--since' option to retrieve the new commits
-          def gitLogCmd = "git log --follow --pretty=oneline --since=\"${lastBuildTimestamp}\" -- ${filePath}"
-          def commitLogs = sh(script: gitLogCmd, returnStdout: true).trim().split('\n')
-
-          // Iterate over the new commit hashes and retrieve the actual code changes using 'git show'
-          for (commitLog in commitLogs) {
-            def commitHash = commitLog.split()[0]
-            def gitShowCmd = "git show ${commitHash}:${filePath}"
-            def codeChanges = sh(script: gitShowCmd, returnStdout: true).trim()
-
-            // Do whatever you need with the code changes
-            echo "Code changes for commit ${commitHash}:\n${codeChanges}"
-          }
+    agent any
+    
+    stages {        
+        stage('Extract Changes') {
+            steps {
+                script {
+                    // Get the commit ID of the last successful build
+                    def lastSuccessfulCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+                    
+                    // Get the commit ID of the latest commit
+                    def latestCommit = sh(returnStdout: true, script: 'git rev-parse HEAD^').trim()
+                    
+                    // Get the changed files between the last successful commit and the latest commit
+                    def changedFiles = sh(returnStdout: true, script: "git diff --name-only ${lastSuccessfulCommit} ${latestCommit}").trim().split('\n')
+                    
+                    // Extract changes for the specific file
+                    def filePath = 'D:\\jenkins_agent\\workspace\\test\\sript.txt'
+                    
+                    if (changedFiles.contains(filePath)) {
+                        sh "git show ${latestCommit}:${filePath} > extracted_changes.txt"
+                    } else {
+                        echo "No changes detected in ${filePath}"
+                    }
+                }
+            }
         }
-      }
     }
-  }
-}
-
-// Helper function to retrieve the previous successful build
-def getPreviousSuccessfulBuild() {
-  def currentBuild = Thread.currentThread().executable
-  def previousBuild = currentBuild.previousBuild
-
-  while (previousBuild != null && previousBuild.result != Result.SUCCESS) {
-    previousBuild = previousBuild.previousBuild
-  }
-
-  return previousBuild
 }
