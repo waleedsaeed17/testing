@@ -15,7 +15,7 @@ pipeline {
                     def changedFiles = sh(returnStdout: true, script: "git diff --name-only ${lastSuccessfulCommit} ${latestCommit}").trim().split('\n')
                     
                     // Extract changes for the specific file
-                    def filePath = 'D:\\jenkins_agent\\workspace\\test\\sript.txt'
+                    def filePath = 'D:\\jenkins_agent\\workspace\\test\\script.txt'
                     
                     if (changedFiles.contains(filePath)) {
                         sh "git show ${latestCommit}:${filePath} > extracted_changes.txt"
