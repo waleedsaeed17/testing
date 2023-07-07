@@ -1,31 +1,35 @@
 pipeline {
-    agent {
-        label "ServerVM"
-    }
-    stages {
-        stage("Compare files") {
-            steps {
-                withCredentials([file(credentialsId: 'winmerge-api-key', variable: 'API_KEY')]) {
-                    httpRequest(
-                        url: "https://api.winmerge.com/compare",
-                        method: "POST",
-                        requestBody: """
-                            {
-                                "file1": "script.txt",
-                                "file2": "change.txt",
-                                "excludeSimilar": true,
-                                "apiKey": "${API_KEY}"
-                            }
-                        """,
-                        contentType: "application/json"
-                    )
+  agent { label 'sys' }
+    
+  stages {
+    stage('Retrieve New Commits') {
+      steps {
+        script {
+          // Specify the file path
+          def filePath = 'D:\\jenkins_agent\\workspace\\test'
 
-                    writeFile(
-                        file: "output.txt",
-                        text: "${httpResponse.content}"
-                    )
-                }
-            }
+          // Get the timestamp of the last successful build
+          def lastBuildTimestamp = null
+          def lastSuccessfulBuild = currentBuild.previousSuccessfulBuild
+          if (lastSuccessfulBuild != null) {
+            lastBuildTimestamp = lastSuccessfulBuild.timestamp.toISOString()
+          }
+
+          // Use the 'git log' command with the '--since' option to retrieve the new commits
+          def gitLogCmd = "git log --follow --pretty=oneline --since=\"${lastBuildTimestamp}\" -- ${filePath}"
+          def commitLogs = bat(script: "cmd /C \"${gitLogCmd}\"", returnStdout: true).trim().split('\n')
+
+          // Iterate over the new commit hashes and retrieve the actual code changes using 'git show'
+          for (commitLog in commitLogs) {
+            def commitHash = commitLog.split()[0]
+            def gitShowCmd = "git show ${commitHash}:${filePath}"
+            def codeChanges = bat(script: "cmd /C \"${gitShowCmd}\"", returnStdout: true).trim()
+
+            // Do whatever you need with the code changes
+            echo "Code changes for commit ${commitHash}:\n${codeChanges}"
+          }
         }
+      }
     }
+  }
 }
