@@ -1,7 +1,8 @@
 pipeline {
     agent any
     
-    stages {        
+    stages {
+        
         stage('Check for changes') {
             steps {
                 script {
@@ -14,7 +15,7 @@ pipeline {
                         for (int j = 0; j < entries.length; j++) {
                             def entry = entries[j]
                             def affectedFiles = entry.affectedFiles
-                            for (int k = 0; k < affectedFiles.length; k++) {
+                            for (int k = 0; k < affectedFiles.size(); k++) {
                                 def file = affectedFiles[k]
                                 // Check if the file path matches the specific file you want
                                 if (file.path == 'D:\\jenkins_agent\\workspace\\testing\\script.txt') {
