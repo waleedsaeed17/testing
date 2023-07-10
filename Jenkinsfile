@@ -1,21 +1,30 @@
 pipeline {
-  agent {
-    label "sys"
-  }
-  stages {
-    stage("Extract new commited code") {
-      steps {
-        script {
-          def lastBuild = sh(returnStdout: true, script: "git log -1 --format=%H")
-          def newCommits = sh(returnStdout: true, script: "git log ${lastBuild}..HEAD --oneline")
-          def gitFile = "D:\\jenkins_agent\\workspace\\testing\\script.txt"
-          def newCommitsList = newCommits.split("\n")
-          for (def commit in newCommitsList) {
-            def commitHash = commit.substring(0, 7)
-            sh(script: "git checkout ${commitHash} ${gitFile}")
-          }
+    agent any
+
+    stages {
+        stage('Extract Changes') {
+            steps {
+                script {
+                    // Get the previous build number
+                    def previousBuildNumber = currentBuild.previousBuild()?.getNumber() ?: 0
+
+                    // Determine the file to extract changes from
+                    def filePath = 'D:\\jenkins_agent\\workspace\\testing\\script.txt'
+
+                    // Get the changed files since the previous build
+                    def changedFiles = sh(script: "git diff --name-only ${previousBuildNumber} HEAD | findstr ${filePath}", returnStdout: true).trim()
+
+                    // Extract the changes
+                    if (changedFiles) {
+                        sh "git archive --format=zip --output=changes.zip HEAD $(git diff --name-only ${previousBuildNumber} HEAD ${changedFiles})"
+                        archiveArtifacts artifacts: 'changes.zip', fingerprint: true
+                    } else {
+                        echo "No changes found in ${filePath}"
+                    }
+                }
+            }
         }
-      }
+
+        // Add more stages as needed
     }
-  }
 }
