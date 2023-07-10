@@ -16,7 +16,7 @@ pipeline {
 
                     // Extract the changes
                     if (changedFiles) {
-                        sh "git archive --format=zip --output=changes.zip HEAD $(git diff --name-only ${previousBuildNumber} HEAD ${changedFiles})"
+                        sh "git archive --format=zip --output=changes.zip HEAD $$(git diff --name-only ${previousBuildNumber} HEAD ${changedFiles})"
                         archiveArtifacts artifacts: 'changes.zip', fingerprint: true
                     } else {
                         echo "No changes found in ${filePath}"
@@ -24,5 +24,7 @@ pipeline {
                 }
             }
         }
+
+        // Add more stages as needed
     }
 }
