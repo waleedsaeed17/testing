@@ -18,7 +18,7 @@ pipeline {
                             for (int k = 0; k < affectedFiles.size(); k++) {
                                 def file = affectedFiles[k]
                                 // Check if the file path matches the specific file you want
-                                if (file.path == 'C:\\ProgramData\\Jenkins\\.jenkins\workspace\\testing\\script.txt') {
+                                if (file.path == 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\testing\\script.txt') {
                                     changedFiles.add(file)
                                 }
                             }
