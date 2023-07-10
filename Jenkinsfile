@@ -1,30 +1,41 @@
 pipeline {
     agent any
-
-    stages {
-        stage('Extract Changes') {
+    
+    stages {        
+        stage('Check for changes') {
             steps {
                 script {
-                    // Get the previous build number
-                    def previousBuildNumber = currentBuild.previousBuild()?.getNumber() ?: 0
-
-                    // Determine the file to extract changes from
-                    def filePath = 'D:\\jenkins_agent\\workspace\\testing\\script.txt'
-
-                    // Get the changed files since the previous build
-                    def changedFiles = sh(script: "git diff --name-only ${previousBuildNumber} HEAD | findstr ${filePath}", returnStdout: true).trim()
-
-                    // Extract the changes
-                    if (changedFiles) {
-                        sh "git archive --format=zip --output=changes.zip HEAD $$(git diff --name-only ${previousBuildNumber} HEAD ${changedFiles})"
-                        archiveArtifacts artifacts: 'changes.zip', fingerprint: true
+                    // Get the list of changed files since the last build
+                    def changeLogSets = currentBuild.changeSets
+                    def changedFiles = []
+                    
+                    for (int i = 0; i < changeLogSets.size(); i++) {
+                        def entries = changeLogSets[i].items
+                        for (int j = 0; j < entries.length; j++) {
+                            def entry = entries[j]
+                            def affectedFiles = entry.affectedFiles
+                            for (int k = 0; k < affectedFiles.length; k++) {
+                                def file = affectedFiles[k]
+                                // Check if the file path matches the specific file you want
+                                if (file.path == 'D:\jenkins_agent\workspace\testing\script.txt') {
+                                    changedFiles.add(file)
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Print the changes or "No changes" if there are none
+                    if (changedFiles.isEmpty()) {
+                        echo 'No changes'
                     } else {
-                        echo "No changes found in ${filePath}"
+                        for (def file : changedFiles) {
+                            // Retrieve the content of the changed file
+                            def fileContent = readFile(file.path)
+                            echo "Changes in ${file.path}: ${fileContent}"
+                        }
                     }
                 }
             }
         }
-
-        // Add more stages as needed
     }
 }
