@@ -6,7 +6,7 @@ pipeline {
             steps {
                 script {
                     // Define the paths of the file to compare
-                    def fileToCompare = 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\now\\script.txt'
+                    def fileToCompare = 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\testing\\script.txt'
                     def outputFile = 'D:\\file.txt'
 
                     // Run WinMerge to compare the file with its current version
