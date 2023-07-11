@@ -1,21 +1,22 @@
 pipeline {
-    agent any
+  agent any
+  stages {
+    stage("Extract new commits") {
+      steps {
+        script {
+          // Get the list of new commits since the last build
+          def new_commits = sh(
+            script: "git log --since=last-build --oneline",
+            returnStdout: true
+          ).trim().split("\n")
 
-    stages {
-        stage('Compare changes') {
-            steps {
-                script {
-                    // Define the paths of the file to compare
-                    def fileToCompare = 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\testing\\script.txt'
-                    def outputFile = 'D:\\file.txt'
-
-                    // Run WinMerge to compare the file with its current version
-                    bat "\"C:\\Program Files\\WinMerge\\WinMergeU.exe\" /e /u /wl /wr /dl \"Current Version\" /dr \"New Changes\" /ub /nb /minimize /x /maximize /s /f1 \"${fileToCompare}\" /f2 . /fo=\"${outputFile}\""
-
-                    // Print the output file path
-                    echo "Output file: ${outputFile}"
-                }
-            }
+          // Write the new commits to a file
+          writeFile(
+            file: "script.txt",
+            text: new_commits
+          )
         }
+      }
     }
+  }
 }
