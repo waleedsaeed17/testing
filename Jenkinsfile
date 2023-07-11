@@ -5,8 +5,20 @@ pipeline {
 
         stage('Show New Commits') {
             steps {
-                // Run git command to show new commits of a file
-                bat 'git log --oneline --follow C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\testing\\script.txt'
+                script {
+                    // Get the commit hashes for the file
+                    def commitHashes = sh(
+                        script: "git log --pretty=format:'%H' --follow C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\testing\\script.txt",
+                        returnStdout: true
+                    ).trim().split('\n')
+                    
+                    // Iterate over the commit hashes and show the code changes
+                    for (def commitHash in commitHashes) {
+                        echo "Commit: ${commitHash}"
+                        sh "git show --stat --oneline ${commitHash} -- C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\testing\\script.txt"
+                        echo "\n"
+                    }
+                }
             }
         }
     }
