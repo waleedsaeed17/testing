@@ -1,36 +1,14 @@
 pipeline {
+    parameters {
+        string(name: 'filePath', defaultValue: 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\testing\\script.txt', description: 'Path to the file for diff')
+    }
     agent any
     
-    environment {
-        FILE_PATH = 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\testing\\script.txt' // Specify the file path here
-    }
-    
     stages {
-        
-        stage('Extract Commit IDs') {
+        stage('Sync and Diff') {
             steps {
-                script {
-                    def commits = sh(script: "git log --pretty=format:\"%H\" -- ${env.FILE_PATH}", returnStdout: true).trim().split('\n')
-                    env.COMMIT_IDS = commits.join(',')
-                }
-            }
-        }
-        
-        stage('Checkout Code') {
-            steps {
-                script {
-                    def commitIds = env.COMMIT_IDS.split(',')
-                    for (int i = 0; i < commitIds.size(); i++) {
-                        def commitId = commitIds[i]
-                        echo "Checking out commit: ${commitId}"
-                        
-                        sh "git checkout ${commitId} -- ${env.FILE_PATH}"
-                        
-                        // Add additional steps to build/test the code against the commit
-                        // For example:
-                        // sh "mvn clean test"
-                    }
-                }
+                bat 'git pull' // Perform a git pull to synchronize the repository
+                bat "C:\\Program Files\\WinMerge\\WinMergeU.exe C:\\Path\\To\\Previous\\Version\\script.txt C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\testing\\script.txt" // Use the correct path to WinMerge and specify the paths of the previous and current versions of the file
             }
         }
     }
