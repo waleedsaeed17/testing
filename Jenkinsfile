@@ -1,14 +1,20 @@
 pipeline {
-    parameters {
-        string(name: 'filePath', defaultValue: 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\testing\\script.txt', description: 'Path to the file for diff')
-    }
     agent any
-    
+
     stages {
-        stage('Sync and Diff') {
+        stage('Compare changes') {
             steps {
-                bat 'git pull' // Perform a git pull to synchronize the repository
-                bat "C:\\Program Files\\WinMerge\\WinMergeU.exe C:\\Path\\To\\Previous\\Version\\script.txt C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\testing\\script.txt" // Use the correct path to WinMerge and specify the paths of the previous and current versions of the file
+                script {
+                    // Define the paths of the file to compare
+                    def fileToCompare = 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\now\\script.txt'
+                    def outputFile = 'D:\\file.txt'
+
+                    // Run WinMerge to compare the file with its current version
+                    bat "\"C:\\Program Files\\WinMerge\" /e /u /wl /wr /dl \"Current Version\" /dr \"New Changes\" /ub /nb /minimize /x /maximize /s /f1 \"${fileToCompare}\" /f2 . /fo=\"${outputFile}\""
+
+                    // Print the output file path
+                    echo "Output file: ${outputFile}"
+                }
             }
         }
     }
