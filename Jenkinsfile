@@ -1,26 +1,41 @@
 pipeline {
-    
     agent any
     
     stages {
-        stage('Prepare') {
+        
+        stage('Retrieve new commits') {
             steps {
                 script {
-                    def latestCommitHash = sh(script: "git log -1 --format=%H", returnStdout: true).trim()
-                
-                // Get the list of new commits
-                    def newCommits = sh(script: "git log ${latestCommitHash}..HEAD --oneline", returnStdout: true).split('\n')
-
-                // Get the path to the specific file
-                    def filePath = 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\testing\\change.txt'
-
-                // Get the list of new commits that affected the specific file
-                    def affectedCommits = newCommits.findAll { it.contains(filePath) }
-
-                // Print the list of new commits
-                    echo "New commits: ${affectedCommits}"
+                    // Assuming you want to track changes in a file named 'my_file.txt'
+                    def fileToTrack = 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\testing\\script.txt'
+                    
+                    // Get the commit hash of the last successful build
+                    def lastSuccessfulCommit = sh(
+                        script: 'git rev-parse HEAD',
+                        returnStdout: true
+                    ).trim()
+                    
+                    // Get the commit hash of the latest commit in the repository
+                    def latestCommit = sh(
+                        script: 'git ls-remote origin HEAD',
+                        returnStdout: true
+                    ).trim().split()[0]
+                    
+                    // Retrieve the list of commits between the last successful build and the latest commit
+                    def commitList = sh(
+                        script: "git log --pretty=format:'%H' ${lastSuccessfulCommit}..${latestCommit} -- ${fileToTrack}",
+                        returnStdout: true
+                    ).trim().split('\n')
+                    
+                    // Process each commit
+                    for (def commit in commitList) {
+                        // Do whatever you want with each commit (e.g., notify, build, etc.)
+                        echo "New commit: ${commit}"
+                    }
                 }
             }
         }
+        
+        // Add more stages for further actions based on the new commits
     }
 }
