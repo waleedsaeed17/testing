@@ -10,7 +10,7 @@ pipeline {
                     def outputFile = 'D:\\file.txt'
 
                     // Run WinMerge to compare the file with its current version
-                    bat "\"C:\\Program Files\\WinMerge\" /e /u /wl /wr /dl \"Current Version\" /dr \"New Changes\" /ub /nb /minimize /x /maximize /s /f1 \"${fileToCompare}\" /f2 . /fo=\"${outputFile}\""
+                    bat "\"C:\\Program Files\\WinMerge\\WinMergeU.exe\" /e /u /wl /wr /dl \"Current Version\" /dr \"New Changes\" /ub /nb /minimize /x /maximize /s /f1 \"${fileToCompare}\" /f2 . /fo=\"${outputFile}\""
 
                     // Print the output file path
                     echo "Output file: ${outputFile}"
