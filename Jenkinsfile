@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        label 'windows'
-    }
+    agent any
     
     environment {
         FILE_PATH = 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\testing\\script.txt' // Specify the file path here
