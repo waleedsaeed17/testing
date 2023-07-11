@@ -12,7 +12,7 @@ pipeline {
                     def newCommits = sh(script: "git log ${latestCommitHash}..HEAD --oneline", returnStdout: true).split('\n')
 
                 // Get the path to the specific file
-                    def filePath = 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\testing\\script.txt'
+                    def filePath = 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\testing\\change.txt'
 
                 // Get the list of new commits that affected the specific file
                     def affectedCommits = newCommits.findAll { it.contains(filePath) }
