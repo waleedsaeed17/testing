@@ -1,26 +1,33 @@
 pipeline {
     agent any
-
+    
+    environment {
+        FILE_PATH = 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\testing\\script.txt' // Specify the file path here
+    }
+    
     stages {
-
-        stage('Fetch Data') {
+        stage('Extract Commit IDs') {
             steps {
                 script {
-                    // Get the commit IDs
-                    def commitIds = sh(
-                        script: 'git log --format="%H"',
-                        returnStdout: true
-                    ).trim().split('\n')
-
-                    // Iterate over the commit IDs and fetch the actual data
-                    for (def commitId in commitIds) {
-                        // Checkout the specific commit
-                        sh "git checkout ${commitId}"
+                    def commits = sh(script: "git log --pretty=format:\"%H\" -- ${env.FILE_PATH}", returnStdout: true).trim().split('\n')
+                    env.COMMIT_IDS = commits.join(',')
+                }
+            }
+        }
+        
+        stage('Checkout Code') {
+            steps {
+                script {
+                    def commitIds = env.COMMIT_IDS.split(',')
+                    for (int i = 0; i < commitIds.size(); i++) {
+                        def commitId = commitIds[i]
+                        echo "Checking out commit: ${commitId}"
                         
-                        // Display the commit ID and the actual data
-                        echo "Commit ID: ${commitId}"
-                        sh "D:\\git"
-                        echo "--------------------"
+                        sh "git checkout ${commitId} -- ${env.FILE_PATH}"
+                        
+                        // Add additional steps to build/test the code against the commit
+                        // For example:
+                        // sh "mvn clean test"
                     }
                 }
             }
