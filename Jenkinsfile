@@ -5,7 +5,7 @@ pipeline {
       steps {
         script {
           def file = 'script.txt'
-          def commitIds = sh(script: "git rev-list HEAD -- $file", returnStdout: true).split('\n')
+          def commitIds = bat (script: "git rev-list HEAD -- $file", returnStdout: true).split('\n')
           println "Commit IDs are: $commitIds"
         }
       }
