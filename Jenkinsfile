@@ -6,7 +6,7 @@ pipeline {
         script {
           // Get the list of new commits since the last build
           def new_commits = bat (
-            script: "git log --since=last-build --oneline",
+            script: "git log --since=last-build --oneline -- path=script.txt",
             returnStdout: true
           ).trim().split("\n")
 
