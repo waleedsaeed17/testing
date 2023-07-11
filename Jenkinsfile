@@ -1,17 +1,16 @@
 pipeline {
   agent any
-  
   stages {
     stage('List Commit IDs') {
       steps {
         script {
-          def file = 'script.txt'
+          def file = '/path/to/file'
           def commitIds = bat (script: "git rev-list HEAD -- $file", returnStdout: true).split('\n')
-          
-          for (def commitId : commitIds) {
-            def commitDetails = bat (script: "git show $commitId", returnStdout: true)
-            println commitDetails
-            println "---------------------------"
+          println "Commit IDs are: $commitIds"
+
+          for (commitId in commitIds) {
+            println "Code for commit ID $commitId:"
+            bat (script: "git show $commitId")
           }
         }
       }
