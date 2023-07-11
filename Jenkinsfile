@@ -19,7 +19,7 @@ pipeline {
                         
                         // Display the commit ID and the actual data
                         echo "Commit ID: ${commitId}"
-                        sh "D:\git"
+                        sh "D:\\git"
                         echo "--------------------"
                     }
                 }
