@@ -6,7 +6,7 @@ pipeline {
             steps {
                 script {
                     // Assuming you want to track changes in a file named 'script.txt'
-                    def fileToTrack = 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\testing\\script.txt'
+                    def fileToTrack = 'C:/ProgramData/Jenkins/.jenkins/workspace/testing/script.txt'
                     
                     // Get the commit hash of the last successful build
                     def lastSuccessfulCommit = bat(script: 'git rev-parse HEAD', returnStdout: true).trim()
@@ -15,7 +15,7 @@ pipeline {
                     def latestCommit = bat(script: 'git ls-remote origin HEAD', returnStdout: true).trim().split()[0]
                     
                     // Retrieve the list of commits between the last successful build and the latest commit
-                    def commitList = bat(script: "git log --pretty=format:\"%H\" ${lastSuccessfulCommit}..${latestCommit} -- ${fileToTrack}", returnStdout: true).trim().split('\n')
+                    def commitList = bat(script: "git log --pretty=format:\"%H\" ${lastSuccessfulCommit}..${latestCommit} -- \"${fileToTrack}\"", returnStdout: true).trim().split('\n')
                     
                     // Process each commit
                     for (def commit in commitList) {
