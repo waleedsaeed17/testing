@@ -7,7 +7,7 @@ pipeline {
             steps {
                 script {
                     // Assuming you want to track changes in a file named 'my_file.txt'
-                    def fileToTrack = 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\testing\\script.txt'
+                    def fileToTrack = 'C:\ProgramData\Jenkins\.jenkins\workspace\testing\script.txt'
                     
                     // Get the commit hash of the last successful build
                     def lastSuccessfulCommit = sh(
