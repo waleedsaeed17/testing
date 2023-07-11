@@ -1,7 +1,7 @@
 pipeline {
   agent any
   stages {
-    stage("Extract new commits") {
+    stage("Show new commits") {
       steps {
         script {
           // Get the list of new commits since the last build
@@ -10,11 +10,11 @@ pipeline {
             returnStdout: true
           ).trim().split("\n")
 
-          // Write the new commits to a file
-          writeFile(
-            file: "script.txt",
-            text: new_commits
-          )
+          // Print the new commits
+          echo "New commits:"
+          for (commit in new_commits) {
+            echo "  ${commit}"
+          }
         }
       }
     }
