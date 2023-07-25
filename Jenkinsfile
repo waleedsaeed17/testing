@@ -11,7 +11,7 @@ pipeline {
                     echo "=== Modified and New Added Files ==="
                     //bat 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD | xargs -I % cygpath -wa %'
                     //bat(script: '''"C:\\Program Files\\Git\\git-bash.exe" -c "git diff --name-only --diff-filter=AM HEAD@{1} HEAD | xargs -I % cygpath -wa %"''')
-                    bat 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD | xargs -I % cygpath -wa %'
+                    bat 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD'
 
                 }
             }
