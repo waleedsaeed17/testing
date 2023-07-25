@@ -14,8 +14,10 @@ pipeline {
 
                         def filePath = "${workspacePath}\\modified_files.txt" // File to store modified file paths
 
-                        // Write modified file paths to the text file
-                        writeFile file: filePath, text: modifiedFiles.join('\n')
+                        // Write modified file paths to the text file, one path per line
+                        modifiedFiles.each { fileName ->
+                            writeFile file: filePath, text: "${workspacePath}\\${fileName}\n", append: true
+                        }
 
                         // Print the file path where the modified file paths are stored
                         echo "Modified file paths saved in: ${filePath}"
