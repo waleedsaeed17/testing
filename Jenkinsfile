@@ -7,14 +7,10 @@ pipeline {
             steps {
                 // Change to the workspace directory
                 dir("${WORKSPACE}") {
-                    // Run the Git commands with echo for the heading
-                    echo "=== Modified and New Added Files ==="
-                    bat """
-                    for /f \"tokens=*\" %%i in ('git diff --name-only --diff-filter=AM HEAD@{1} HEAD') do (
-                        for /f \"tokens=*\" %%a in ('git rev-parse --show-toplevel/%%i') do (
-                            echo %%a
-                        )
-                    )
+                    // Run the Git commands and print the absolute paths of modified and newly added files
+                    powershell """
+                    Write-Output "=== Modified and New Added Files ==="
+                    git diff --name-only --diff-filter=AM HEAD@{1} HEAD | ForEach-Object { (Get-Item -LiteralPath \$_).FullName }
                     """
                 }
             }
