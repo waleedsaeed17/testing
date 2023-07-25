@@ -7,11 +7,9 @@ pipeline {
             steps {
                 // Change to the workspace directory
                 dir("${WORKSPACE}") {
-                    // Run the Git commands and print the absolute paths of modified and newly added files
-                    powershell """
-                    Write-Output "=== Modified and New Added Files ==="
-                    git diff --name-only --diff-filter=AM HEAD^ HEAD | ForEach-Object { (Get-Item -LiteralPath \$_).FullName }
-                    """
+                    // Run the Git command with echo for the heading
+                    echo "=== Modified and New Added Files ==="
+                    bat 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD | xargs -I % cygpath -wa %'
                 }
             }
         }
