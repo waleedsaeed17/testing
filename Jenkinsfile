@@ -8,7 +8,7 @@ pipeline {
                 dir("${WORKSPACE}") {
                     // Run the Git command and print the complete path of files
                     script {
-                        def gitDiffOutput = bat(returnStdout: true, script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD')
+                        def gitDiffOutput = bat(returnStdout: true, script: 'git diff --name-only --diff-filter=D HEAD@{1} HEAD')
                         def workspacePath = pwd() // Get the current workspace path
                         gitDiffOutput.readLines().each { fileName ->
                             echo "${workspacePath}\\${fileName}"
