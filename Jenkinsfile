@@ -2,15 +2,14 @@ pipeline {
     agent {label 'sys'}
 
     stages {
-        stage('Git Diff') {
+        stage('Run Git Command') {
             steps {
-                bat '''@echo off
-                REM Change the path to your Git repository
-                cd C:\\Users\\Waleed Saeed\\Desktop\\test\\testing
-
-                REM Run the git diff command
-                "C:\\Program Files\\Git\\git-bash.exe" git diff --name-only --diff-filter=M HEAD@{1} HEAD
-                '''
+                // Change to the workspace directory
+                dir("${WORKSPACE}") {
+                    // Run your Git commands here
+                    // For example, if you want to list the files in the current workspace, you can use:
+                    bat 'git ls-files'
+                }
             }
         }
     }
