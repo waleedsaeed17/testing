@@ -10,7 +10,7 @@ pipeline {
                     // Run the Git commands and print the absolute paths of modified and newly added files
                     powershell """
                     Write-Output "=== Modified and New Added Files ==="
-                    git diff --name-only --diff-filter=AM HEAD@{1} HEAD | ForEach-Object { (Get-Item -LiteralPath \$_).FullName }
+                    git diff --name-only --diff-filter=AM HEAD^ HEAD | ForEach-Object { (Get-Item -LiteralPath \$_).FullName }
                     """
                 }
             }
