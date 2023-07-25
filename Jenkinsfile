@@ -25,8 +25,7 @@ pipeline {
                     // Run the Git command and print the complete path of deleted files
                     script {
                         def gitDiffDeletedOutput = bat(returnStdout: true, script: 'git diff --name-only --diff-filter=D HEAD@{1} HEAD')
-                        def workspacePath = pwd() // Get the current workspace path
-                        def deletedFilesPath = gitDiffDeletedOutput.readLines().collect { "${workspacePath}\\${it}" }.join('\n')
+                        def deletedFilesPath = gitDiffDeletedOutput.readLines().join('\n')
                         echo "Deleted:\n${deletedFilesPath}"
                         writeFile file: 'deleted_files.txt', text: deletedFilesPath
                     }
