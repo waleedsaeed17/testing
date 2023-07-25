@@ -8,11 +8,12 @@ pipeline {
                 dir("${WORKSPACE}") {
                     // Run the Git command and save the modified file paths to a text file
                     script {
+                        // Execute the Git command in a Windows shell using bat
                         def gitModified = bat(returnStdout: true, script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD')
                         def workspacePath = pwd() // Get the current workspace path
 
-                        // Combine the workspace path with each modified file name
-                        def modifiedFiles = gitModified.readLines().collect { "${workspacePath}\\${it}" }
+                        // Split the output into lines and filter out unnecessary data
+                        def modifiedFiles = gitModified.readLines().findAll { it !=~ /^D:/ }
 
                         def filePath = "${workspacePath}\\modified_files.txt" // File to store modified file paths
 
