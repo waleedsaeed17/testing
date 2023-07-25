@@ -8,7 +8,7 @@ pipeline {
                 dir("${WORKSPACE}") {
                     // Run your Git commands here
                     // For example, if you want to list the files in the current workspace, you can use:
-                    bat 'git ls-files'
+                    bat 'git diff --name-only --diff-filter=M HEAD@{1} HEAD'
                 }
             }
         }
