@@ -1,21 +1,20 @@
 pipeline {
-  agent none
-  
-  stages {
-    stage('List Commit IDs') {
-      steps {
-        script {
-          def file = 'script.txt'
-          def workspacePath = pwd()
-          def commitIds = bat(script: "git -C ${workspacePath} rev-list HEAD -- ${file}", returnStdout: true).split('\n')
-          
-          for (def commitId : commitIds) {
-            def commitDetails = bat(script: git -C ${workspacePath} show ${commitId}", returnStdout: true)
-            println commitDetails
-            println "---------------------------"
-          }
+    agent {label 'sys'}
+
+    stages {
+        stage('Pull and Copy Modified Files') {
+            steps {
+                // Pull updates from the remote repository
+              
+                // Get the list of modified files
+                def modifiedFiles = bat(script: 'git diff --name-only --diff-filter=M HEAD@{1} HEAD', returnStdout: true).trim()
+
+                // Create the destination directory (if needed)
+                //bat 'mkdir C:\\path\\to\\destination_directory'
+
+                // Copy the modified files to the destination directory
+                bat "echo ${modifiedFiles} | xargs -I{} copy \"{}\" D:\\Release"
+            }
         }
-      }
     }
-  }
 }
