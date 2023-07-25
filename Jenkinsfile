@@ -9,7 +9,7 @@ pipeline {
                 cd C:\\Users\\Waleed Saeed\\Desktop\\test\\testing
 
                 REM Run the git diff command
-                "C:\\Program Files\\Git\\bin\\git.exe" git diff --name-only --diff-filter=M HEAD@{1} HEAD
+                "C:\\Program Files\\Git\\git-bash.exe" git diff --name-only --diff-filter=M HEAD@{1} HEAD
                 '''
             }
         }
