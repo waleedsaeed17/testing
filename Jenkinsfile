@@ -2,7 +2,7 @@ pipeline {
     agent { label 'sys' }
 
     stages {
-        stage('Run Git Commands - Modified and New Added Files') {
+        stage('Modified Files') {
             steps {
                 // Change to the workspace directory
                 dir("${WORKSPACE}") {
@@ -18,7 +18,7 @@ pipeline {
             }
         }
         
-        stage('Run Git Commands - Deleted Files') {
+        stage('Deleted Files') {
             steps {
                 // Change to the workspace directory
                 dir("${WORKSPACE}") {
