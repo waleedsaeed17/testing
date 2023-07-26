@@ -11,7 +11,7 @@ pipeline {
                         def gitModified = bat(returnStdout: true, script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD')
                         def workspacePath = pwd() // Get the current workspace path
                         gitModified.readLines().each { fileName ->
-                            echo "Modified/New Files: ${workspacePath}\\${fileName}"
+                        echo "Modified/New Files: ${workspacePath}\\${fileName}"
                         }
                     }
                 }
