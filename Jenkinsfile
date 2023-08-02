@@ -10,7 +10,7 @@ pipeline {
 
                     if (propertiesFiles) {
                         // Copy the modified/added .properties files to a target directory
-                        bat "xcopy /Y /I /E ${workspace}\\conf\\events\\*.properties ${workspace}\\target_directory\\"
+                        bat "xcopy /Y /I /E ${workspace}\\tes\\*.properties ${workspace}\\target_directory\\"
                     } else {
                         echo "No modified or added .properties files found."
                     }
