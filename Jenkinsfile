@@ -8,16 +8,12 @@ pipeline {
                 script {
                     def modifiedFiles = bat(returnStdout: true, script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD')
                     def events = modifiedFiles.split("\\n").findAll { it.endsWith('.properties') }
-                    def tes = modifiedFiles.split("\\n").findAll { it.endsWith('.properties') }
+                    def folder = modifiedFiles.split("\\n").findAll { it.endsWith('.properties') }
 
-                    if (events || admin || tes) {
-                        if (tes) {
+                    if (events || admin || folder) {
+                        if (folder) {
                             // Copy the modified/added .properties files in 'events' to target directory
-                            bat "xcopy /Y /I /E ${workspace}\\tes\\*.properties ${workspace}\\target_directory_events\\"
-                        }
-                        if (admin) {
-                            // Copy the modified/added .properties files in 'admin' to target directory
-                            bat "xcopy /Y /I /E ${workspace}\\conf\\admin\\*.properties ${workspace}\\target_directory_admin\\"
+                            bat "xcopy /Y /I /E ${workspace}\\folder\\*.properties ${workspace}\\target_directory_events\\"
                         }
                     } else {
                         echo "No modified or added .properties files found."
