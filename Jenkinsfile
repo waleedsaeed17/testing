@@ -1,30 +1,23 @@
 pipeline {
-    agent {label 'sys'}
+    agent any
 
     stages {
 
-
-        stage('Find Modified/Added .properties files') {
+        stage('Find and Copy Modified/Added .properties files') {
             steps {
                 script {
                     def modifiedFiles = bat(returnStdout: true, script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD')
-                    def propertiesFiles = modifiedFiles.split("\\n").findAll { it.endsWith('.properties') }
+                    def events = modifiedFiles.split("\\n").findAll { it.endsWith('.properties') }
+                    def tes = modifiedFiles.split("\\n").findAll { it.endsWith('.properties') }
 
-                    if (propertiesFiles) {
-                        // Copy the modified/added .properties files to their respective target directories
-                        propertiesFiles.each { file ->
-                            if (file = 'tes//folder//') {
-                                bat "xcopy /Y /I /E ${workspace}\\${file} ${workspace}\\northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\events\\struts\\"
-                            } else if (file =~ '^conf/admin/') {
-                                bat "xcopy /Y /I /E ${workspace}\\${file} ${workspace}\\northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\admin\\"
-                            } else if (file =~ '^conf/banquet/') {
-                                bat "xcopy /Y /I /E ${workspace}\\${file} ${workspace}\\northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\banquet\\"
-                            }
-                            // Add other conditions for the remaining paths and target directories
-                            // ...
-                            else {
-                                echo "No target directory found for ${file}."
-                            }
+                    if (events || admin || tes) {
+                        if (tes) {
+                            // Copy the modified/added .properties files in 'events' to target directory
+                            bat "xcopy /Y /I /E ${workspace}\\tes\\*.properties ${workspace}\\target_directory_events\\"
+                        }
+                        if (admin) {
+                            // Copy the modified/added .properties files in 'admin' to target directory
+                            bat "xcopy /Y /I /E ${workspace}\\conf\\admin\\*.properties ${workspace}\\target_directory_admin\\"
                         }
                     } else {
                         echo "No modified or added .properties files found."
