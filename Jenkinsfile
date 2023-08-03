@@ -15,11 +15,11 @@ pipeline {
                     if (propertiesFiles) {
                         // Define a map with source directories and their corresponding target locations
                         def fileMappings = [
-                            "${workspace}\\tes\\*.properties": "D:/northstar/WEB-INF/classes/com/sibisoft/northstar/admin/",
-                            "${workspace}\\conf\\banquet\\*.properties": "northstar/WEB-INF/classes/com/sibisoft/northstar/banquet/",
-                            "${workspace}\\conf\\campaign\\*.properties": "northstar/WEB-INF/classes/com/sibisoft/northstar/campaign/",
-                            "${workspace}\\conf\\dining\\*.properties": "northstar/WEB-INF/classes/com/sibisoft/northstar/dining/",
-                            "${workspace}\\conf\\pms\\*.properties": "northstar/WEB-INF/classes/com/sibisoft/northstar/pms/"
+                            "${workspace}\\conf\\admin\\*.properties": "northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\admin\\",
+                            "${workspace}\\conf\\banquet\\*.properties": "northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\banquet\\",
+                            "${workspace}\\conf\\campaign\\*.properties": "northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\campaign\\",
+                            "${workspace}\\conf\\dining\\*.properties": "northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\dining\\",
+                            "${workspace}\\conf\\pms\\*.properties": "northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\pms\\"
                         ]
 
                         // Loop through the file mappings and copy the modified/added .properties files to the target locations
