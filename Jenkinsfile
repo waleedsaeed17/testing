@@ -7,7 +7,7 @@ pipeline {
             steps {
                 script {
                     // Execute a shell/batch script and capture the output (modifiedFiles)
-                    def modifiedFiles = bat(returnStdout: true, script: 'git diff --name-only --diff-filter=MA origin/master...HEAD')
+                    def modifiedFiles = bat(returnStdout: true, script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD')
 
                     // Split the output by newlines and filter the .properties files
                     def propertiesFiles = modifiedFiles.split("\\n").findAll { it.endsWith('.properties') }
