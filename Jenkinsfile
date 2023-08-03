@@ -13,7 +13,7 @@ pipeline {
                     if (propertiesFiles) {
                         // Copy the modified/added .properties files to their respective target directories
                         propertiesFiles.each { file ->
-                            if (file =~ 'tes/') {
+                            if (file =~ 'tes//') {
                                 bat "xcopy /Y /I /E ${workspace}\\${file} ${workspace}\\northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\events\\struts\\"
                             } else if (file =~ '^conf/admin/') {
                                 bat "xcopy /Y /I /E ${workspace}\\${file} ${workspace}\\northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\admin\\"
