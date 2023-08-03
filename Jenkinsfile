@@ -15,7 +15,7 @@ pipeline {
                     if (propertiesFiles) {
                         // Define a map with source directories and their corresponding target locations
                         def fileMappings = [
-                            "${workspace}\\conf\\admin\\*.properties": "northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\admin\\",
+                            "${workspace}\\tes\\*.properties": "northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\admin\\",
                             "${workspace}\\conf\\banquet\\*.properties": "northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\banquet\\",
                             "${workspace}\\conf\\campaign\\*.properties": "northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\campaign\\",
                             "${workspace}\\conf\\dining\\*.properties": "northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\dining\\",
