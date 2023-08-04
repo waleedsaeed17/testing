@@ -5,7 +5,7 @@ pipeline {
         stage('Find and Copy Modified/Added .properties files') {
             steps {
                 script {
-                    def modifiedFiles = bat(returnStdout: true, script: 'git diff --name-only --diff-filter=MA origin/master...HEAD')
+                    def modifiedFiles = bat(returnStdout: true, script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD')
                     def folder1 = modifiedFiles.split("\\n").findAll { it.endsWith('.properties') }
                     def folder2 = modifiedFiles.split("\\n").findAll { it.endsWith('.properties') }
 
