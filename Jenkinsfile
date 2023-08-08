@@ -1,35 +1,23 @@
 pipeline {
-    agent {label 'sys'}
+    agent { label 'sys' }
 
     stages {
-        
-        stage('Find .properties files') {
+        stage('Find files') {
             steps {
                 script {
                     def modifiedFilesEvents = bat(returnStdout: true, script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD')
-                    def propertiesFiles = modifiedFilesEvents.split("\\n").findAll { it.endsWith('.properties') }
+                    def propertiesFiles = modifiedFilesEvents.readLines().findAll { it.endsWith('.properties') }
 
                     if (propertiesFiles) {
-                        // Copy the modified/added .properties files to a target directory
-                        bat "xcopy /Y /I /E ${workspace}\\folder1\\*.properties D:\\northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\events\\struts"
+                        for (def file in propertiesFiles) {
+                            // Copy each modified/added .properties file to the target directory
+                            bat "xcopy /Y /I ${file} D:\\northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\events\\struts"
+                        }
                     } else {
                         echo "No modified or added .properties files found in 'events' directory."
                     }
                 }
-
-                script {
-                    def modifiedFilesAdmin = bat(returnStdout: true, script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD')
-                    def propertiesFilesAdmin = modifiedFilesAdmin.split("\\n").findAll { it.endsWith('.properties') }
-
-                    if (propertiesFilesAdmin) {
-                        // Copy the modified/added .properties files to a target directory
-                        bat "xcopy /Y /I /E ${workspace}\\folder2\\*.properties D:\\northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\admin"
-                    } else {
-                        echo "No modified or added .properties files found in 'admin' directory."
-                    }
-                }
             }
         }
-
     }
 }
