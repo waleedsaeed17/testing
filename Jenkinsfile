@@ -11,7 +11,7 @@ pipeline {
 
                     if (propertiesFiles) {
                         // Copy the modified/added .properties files to a target directory
-                        bat "xcopy /Y /I /E ${workspace}\\conf\\events\\*.properties D:\\northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\events\\struts"
+                        bat "xcopy /Y /I /E ${workspace}\\folder1\\*.properties D:\\northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\events\\struts"
                     } else {
                         echo "No modified or added .properties files found in 'events' directory."
                     }
@@ -23,7 +23,7 @@ pipeline {
 
                     if (propertiesFilesAdmin) {
                         // Copy the modified/added .properties files to a target directory
-                        bat "xcopy /Y /I /E ${workspace}\\conf\\admin\\*.properties D:\\northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\admin"
+                        bat "xcopy /Y /I /E ${workspace}\\folder2\\*.properties D:\\northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\admin"
                     } else {
                         echo "No modified or added .properties files found in 'admin' directory."
                     }
