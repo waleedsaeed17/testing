@@ -6,7 +6,7 @@ pipeline {
             steps {
                 script {
                     def committedFilesEvents = bat(returnStdout: true, script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD')
-                    def committedPropertiesFiles = committedFilesEvents.readLines().findAll { it.endsWith('.properties') && it.startsWith("${workspace}\\conf\\events\\") }
+                    def committedPropertiesFiles = committedFilesEvents.readLines().findAll { it.endsWith('.properties') && it.startsWith("${workspace}\\folder1\\") }
 
                     if (committedPropertiesFiles) {
                         for (def file in committedPropertiesFiles) {
