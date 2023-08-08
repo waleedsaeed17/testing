@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent {label 'sys'}
 
     stages {
         stage('Find and Copy Modified .properties Files') {
