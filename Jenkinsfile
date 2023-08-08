@@ -2,19 +2,19 @@ pipeline {
     agent { label 'sys' }
 
     stages {
-        stage('Find files') {
+        stage('Find and Copy Committed .properties files') {
             steps {
                 script {
-                    def modifiedFilesEvents = bat(returnStdout: true, script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD')
-                    def propertiesFiles = modifiedFilesEvents.readLines().findAll { it.endsWith('.properties') }
+                    def committedFilesEvents = bat(returnStdout: true, script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD')
+                    def committedPropertiesFiles = committedFilesEvents.readLines().findAll { it.endsWith('.properties') && it.startsWith("${workspace}\\conf\\events\\") }
 
-                    if (propertiesFiles) {
-                        for (def file in propertiesFiles) {
-                            // Copy each modified/added .properties file to the target directory
+                    if (committedPropertiesFiles) {
+                        for (def file in committedPropertiesFiles) {
+                            // Copy each committed .properties file to the target directory
                             bat "xcopy /Y /I ${file} D:\\northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\events\\struts"
                         }
                     } else {
-                        echo "No modified or added .properties files found in 'events' directory."
+                        echo "No committed .properties files found in 'events' directory."
                     }
                 }
             }
