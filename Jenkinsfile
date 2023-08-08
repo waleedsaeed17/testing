@@ -18,7 +18,7 @@ pipeline {
                 }
 
                 script {
-                    def modifiedFilesAdmin = bat(returnStdout: true, script: 'git diff --name-only --diff-filter=MA origin/master...HEAD')
+                    def modifiedFilesAdmin = bat(returnStdout: true, script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD')
                     def propertiesFilesAdmin = modifiedFilesAdmin.split("\\n").findAll { it.endsWith('.properties') }
 
                     if (propertiesFilesAdmin) {
