@@ -1,22 +1,26 @@
 pipeline {
     agent {label 'sys'}
-    
+
     stages {
-        
-        stage('Show Changes') {
+
+        stage('Find and Copy Modified/Added .properties files') {
             steps {
                 script {
-                    def workspacePath = pwd()
-                    
-                    // List updated and newly added .properties files
-                    def gitDiff = bat(script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD', returnStdout: true).trim()
-                    echo "Added and modified .properties files in this pull:"
-                    
-                    gitDiff.split('\n').findAll { filePath ->
-                        filePath.endsWith('.properties')
-                    }.each { propertiesFile ->
-                        def fullPath = "${workspacePath}\\${propertiesFile}"
-                        echo fullPath
+                    def modifiedFiles = bat(returnStdout: true, script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD')
+                    def propertiesFilesEvents = modifiedFiles.split("\\n").findAll { it.endsWith('.properties') }
+                    def propertiesFilesAdmin = modifiedFiles.split("\\n").findAll { it.endsWith('.properties') }
+
+                    if (propertiesFilesEvents || propertiesFilesAdmin) {
+                        if (propertiesFilesEvents) {
+                            // Copy the modified/added .properties files in 'events' to target directory
+                            bat "xcopy /Y /I /E ${workspace}\\folder1\\conf\\*.properties ${workspace}\\target_directory_events\\"
+                        }
+                        if (propertiesFilesAdmin) {
+                            // Copy the modified/added .properties files in 'admin' to target directory
+                            bat "xcopy /Y /I /E ${workspace}\\conf\\admin\\*.properties ${workspace}\\target_directory_admin\\"
+                        }
+                    } else {
+                        echo "No modified or added .properties files found."
                     }
                 }
             }
