@@ -10,7 +10,7 @@ pipeline {
                     def confPath = "${workspacePath}\\folder1\\conf"
                     def adminConfPath = "${workspacePath}\\conf\\admin"
                     def banquetConfPath = "${workspacePath}\\conf\\banquet"
-                    def destinationPathEvents = "D:\\\\northstar\\\\WEB-INF\\\\classes\\\\com\\\\sibisoft\\\\northstar\\\\events\\\\struts"
+                    def destinationPathEvents = "D:\\northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\events\\struts"
                     def destinationPathAdmin = "D:\\\\northstar\\\\WEB-INF\\\\classes\\\\com\\\\sibisoft\\\\northstar\\\\admin\\\\struts"
                     def destinationPathBanquet = "D:\\\\northstar\\\\WEB-INF\\\\classes\\\\com\\\\sibisoft\\\\northstar\\\\banquet\\\\struts"
 
