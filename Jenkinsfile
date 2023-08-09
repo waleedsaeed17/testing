@@ -16,7 +16,7 @@ pipeline {
 
                             // Check the containing directories and copy files accordingly
                             if (file.startsWith('folder1\\conf')) {
-                                bat "xcopy /Y \"${file}\" \"D:\\northtar\\\\\""
+                                bat "xcopy /Y \"${file}\" \"D:\\northtar\""
                         
                         }
                     }
