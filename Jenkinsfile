@@ -17,7 +17,7 @@ pipeline {
                     echo "Changed Files: ${changedFiles}"
 
                     for (dirMapping in directories) {
-                        def sourceDir = "${workspacePath}${File.separator}${dirMapping.sourceDir}".replace("/", File.separator)
+                        def sourceDir = "${workspacePath}/${dirMapping.sourceDir}".replace("\\", "/")
                         def targetDir = dirMapping.targetDir
                         echo "Source Directory: ${sourceDir}"
                         echo "Target Directory: ${targetDir}"
@@ -42,9 +42,9 @@ pipeline {
                             // Copy the relevant files to the target directory
                             for (file in relevantFiles) {
                                 def relativePath = file - sourceDir
-                                def destinationPath = "${targetDir}${File.separator}${relativePath}"
-                                echo "Copying ${sourceDir}${File.separator}${relativePath} to ${destinationPath}"
-                                bat(script: "copy \"${sourceDir}${File.separator}${relativePath}\" \"${destinationPath}\"")
+                                def destinationPath = "${targetDir}/${relativePath}".replace("\\", "/")
+                                echo "Copying ${sourceDir}/${relativePath} to ${destinationPath}"
+                                bat(script: "copy \"${sourceDir}/${relativePath}\" \"${destinationPath}\"")
                             }
                         } else {
                             echo "No relevant files found for ${dirMapping.sourceDir}."
