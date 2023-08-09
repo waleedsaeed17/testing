@@ -17,7 +17,7 @@ pipeline {
                                 bat "copy /Y ${sourceFile} ${targetFile}"
                             }
                         }
-                        
+
                     } else {
                         echo "No modified or added .properties files found."
                     }
