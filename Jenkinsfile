@@ -16,10 +16,9 @@ pipeline {
                         filePath.endsWith('.properties')
                     }.each { propertiesFile ->
                         echo "${workspacePath}\\${propertiesFile}"
+                    }
                 }
             }
         }
     }
-    
-
 }
