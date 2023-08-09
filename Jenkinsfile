@@ -33,7 +33,7 @@ pipeline {
                         for (file in relevantFiles) {
                             def fileName = file.substring(file.lastIndexOf('/') + 1)
                             def destinationPath = "${targetDir}\\${fileName}"
-                            bat(script: "xcopy /Y /I /E ${sourceDir}\\${fileName} ${destinationPath}")
+                            bat "xcopy /Y /I /E ${sourceDir}\\${fileName} ${destinationPath}"
                         }
                     }
                 }
