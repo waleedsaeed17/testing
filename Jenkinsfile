@@ -8,13 +8,14 @@ pipeline {
                 script {
                     def workspacePath = pwd()
                     
-                    // List updated and newly added files
+                    // List updated and newly added .properties files
                     def gitDiff = bat(script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD', returnStdout: true).trim()
-                    echo "Added and modified files in this pull:"
+                    echo "Added and modified .properties files in this pull:"
                     
-                    gitDiff.split('\n').each { filePath ->
-                        echo "${workspacePath}\\${filePath}"
-                    }
+                    gitDiff.split('\n').findAll { filePath ->
+                        filePath.endsWith('.properties')
+                    }.each { propertiesFile ->
+                        echo "${workspacePath}\\${propertiesFile}"
                 }
             }
         }
