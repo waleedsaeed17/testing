@@ -34,9 +34,7 @@ pipeline {
                         
                         if (!relevantFiles.isEmpty()) {
                             // Create the target directory if it doesn't exist
-                            if (!fileExists(targetDir)) {
-                                bat(script: "mkdir \"${targetDir}\"")
-                            }
+                            bat(script: "if not exist \"${targetDir}\" mkdir \"${targetDir}\"")
                             
                             // Copy the relevant files to the target directory
                             for (file in relevantFiles) {
@@ -53,8 +51,4 @@ pipeline {
             }
         }
     }
-}
-
-def fileExists(filePath) {
-    return (new File(filePath)).exists()
 }
