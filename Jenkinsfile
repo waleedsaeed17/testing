@@ -15,7 +15,7 @@ pipeline {
                     gitDiff.split('\n').findAll { filePath ->
                         filePath.endsWith('.properties')
                     }.each { propertiesFile ->
-                        def fullPath = "${workspacePath}\\${propertiesFile}".replace('/', '\\')
+                        def fullPath = "${workspacePath}\\${propertiesFile}"
                         echo fullPath
                     }
                 }
