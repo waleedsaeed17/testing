@@ -8,7 +8,7 @@ pipeline {
                 script {
                     def workspacePath = "${env.WORKSPACE}"
                     def directories = [
-                        ['sourceDir': 'folder1', 'targetDir': 'D:\\northstar\\classes'],
+                        ['sourceDir': 'tes\\folder', 'targetDir': 'D:\\northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\events\\struts'],
                         ['sourceDir': 'folder2', 'targetDir': 'D:\\northstar\\webINF']
                         // Add more directory mappings as needed
                     ]
