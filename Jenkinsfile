@@ -14,7 +14,7 @@ pipeline {
                     ]
                     
                     // Get the list of modified/added .properties files using git diff
-                    def modifiedPropertiesFiles = bat(script: '"C:\\Program Files\\Git\\bin\\git.exe" diff --name-only --diff-filter=AM HEAD^^ HEAD | findstr /R "\\.properties$"', returnStdout: true).trim().split('\r\n')
+                    def modifiedPropertiesFiles = bat(script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD | findstr /R "\\.properties$"', returnStdout: true).trim().split('\r\n')
                     
                     // Loop through each directory mapping
                     directoryMappings.each { mapping ->
