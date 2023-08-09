@@ -8,7 +8,7 @@
                     def workspacePath = "${env.WORKSPACE}"
                     def directories = [
                         ['sourceDir': 'folder1/conf/', 'targetDir': 'D:\\northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\events\\struts'],
-                        ['sourceDir': 'folder2//admin', 'targetDir': 'D:\\northstar']
+                        ['sourceDir': 'folder2\\admin\\', 'targetDir': 'D:\\northstar']
                         // Add more directory mappings as needed
                     ]
 
