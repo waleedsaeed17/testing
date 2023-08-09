@@ -9,10 +9,12 @@ pipeline {
                     def propertiesFilesEvents = modifiedFiles.readLines().findAll { it.endsWith('.properties') }
                     def propertiesFilesAdmin = modifiedFiles.readLines().findAll { it.endsWith('.properties') }
 
-                    if (propertiesFilesEvents) {
+                    if (propertiesFilesEvents || propertiesFilesAdmin) {
                         if (propertiesFilesEvents) {
                             propertiesFilesEvents.each { propertyFile ->
-                                bat "xcopy /Y /I ${workspace}\\folder2\\${propertyFile} ${workspace}\\target_directory_events\\"
+                                def sourceFile = "${workspace}\\folder2\\${propertyFile}"
+                                def targetFile = "${workspace}\\target_directory_events\\${propertyFile}"
+                                bat "copy /Y ${sourceFile} ${targetFile}"
                             }
                         }
                         
