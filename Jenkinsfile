@@ -15,7 +15,7 @@ pipeline {
                             echo file
 
                             // Check the containing directories and copy files accordingly
-                            if (file.startsWith('folder1\conf')) {
+                            if (file.startsWith('folder1\\conf')) {
                                 bat "xcopy /Y \"${file}\" \"D:\\northtar\\\\${file.substring('folder1/conf/'.length())}\""
                             } else if (file.startsWith('folder2/admin')) {
                                 bat "xcopy /Y \"${file}\" \"D:\\northstar\\\\classes\\\\${file.substring('folder2/admin/'.length())}\""
