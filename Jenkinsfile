@@ -25,10 +25,17 @@ pipeline {
                         // Filter for .properties files in the source directory and its subdirectories
                         def relevantFiles = []
                         for (file in changedFiles) {
-                            if (file.startsWith(sourceDir) && file.endsWith('.properties')) {
-                                relevantFiles.add(file)
+                            echo "Checking file: ${file}"
+                            echo "Source Directory: ${sourceDir}"
+    
+                            if (file.startsWith(sourceDir)) {
+                                if (file.endsWith('.properties')) {
+                                    relevantFiles.add(file)
+                                } else {
+                                    echo "Skipped (not .properties file): $file"
+                                }
                             } else {
-                                echo "Skipped: $file"
+                                echo "Skipped (not in source directory): $file"
                             }
                         }
 
