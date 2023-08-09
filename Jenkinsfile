@@ -26,7 +26,7 @@ pipeline {
                             def sourceFile = "${workspacePath}\\${filePath}"
 
                             if (filePath.endsWith('.properties')) {
-                                if (filePath.startsWith('folder1/conf/')) {
+                                if (filePath.startsWith('folder1\\conf\\')) {
                                     def destinationFile = "${destinationPathEvents}\\${filePath}"
                                     bat "xcopy /Y \"${sourceFile}\" \"${destinationFile}\""
                                 } else if (filePath.startsWith('conf/admin/')) {
