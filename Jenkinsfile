@@ -9,17 +9,13 @@ pipeline {
                     def propertiesFilesEvents = modifiedFiles.readLines().findAll { it.endsWith('.properties') }
                     def propertiesFilesAdmin = modifiedFiles.readLines().findAll { it.endsWith('.properties') }
 
-                    if (propertiesFilesEvents || propertiesFilesAdmin) {
+                    if (propertiesFilesEvents) {
                         if (propertiesFilesEvents) {
                             propertiesFilesEvents.each { propertyFile ->
                                 bat "xcopy /Y /I ${workspace}\\folder2\\${propertyFile} ${workspace}\\target_directory_events\\"
                             }
                         }
-                        if (propertiesFilesAdmin) {
-                            propertiesFilesAdmin.each { propertyFile ->
-                                bat "xcopy /Y /I ${workspace}\\conf\\admin\\${propertyFile} ${workspace}\\target_directory_admin\\"
-                            }
-                        }
+                        
                     } else {
                         echo "No modified or added .properties files found."
                     }
