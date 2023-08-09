@@ -41,7 +41,7 @@ pipeline {
                                 def fileName = file.substring(file.lastIndexOf('/') + 1)
                                 def destinationPath = "${targetDir}\\${fileName}"
                                 echo "Copying ${sourceDir}\\${fileName} to ${destinationPath}"
-                                bat(script: "copy ${sourceDir}\\${fileName} ${destinationPath}")
+                                bat(script: "copy \"${sourceDir}\\${fileName}\" \"${destinationPath}\"")
                             }
                         } else {
                             echo "No relevant files found for ${dirMapping.sourceDir}."
