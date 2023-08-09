@@ -3,35 +3,39 @@ pipeline {
     
     stages {
         
-        stage('Check and Copy') {
+        stage('Copy Modified Properties Files') {
             steps {
                 script {
-                    def workspace = pwd()
-                    def changes = sh(script: "git diff --name-status HEAD^..HEAD", returnStdout: true).trim().split('\n')
-                    
-                    def copyRules = [
-                        ["source": "${workspace}\\folder1\\conf", "target": "D:\\northstar\\sibisoft1"],
-                        ["source": "folder2", "target": "D:\\northstar\\sibisoft2"],
-                        // Add more rules as needed
+                    // Define a list of source and target directories
+                    def directoryMappings = [
+                        [source: 'folder1\\conf', target: 'D:\\northstar'],
+                        [source: 'source_dir_2', target: 'target_dir_2']
+                        // Add more mappings as needed
                     ]
                     
-                    for (change in changes) {
-                        def fileInfo = change.split('\t')
-                        def changeType = fileInfo[0]
-                        def filePath = fileInfo[1]
-                        
-                        for (rule in copyRules) {
-                            def sourceDir = rule.source
-                            def targetDir = rule.target
+                    // Get the list of modified/added .properties files using git diff
+                    def modifiedPropertiesFiles = bat(script: 'git diff --name-only --diff-filter=AM HEAD^ HEAD | findstr /R "\\.properties$"', returnStdout: true).trim().split('\r\n')
+                    
+                    // Loop through each directory mapping
+                    directoryMappings.each { mapping ->
+                        // Use PowerShell to copy modified/added .properties files
+                        powershell '''
+                            $sourceDir = "${env.WORKSPACE}\\${mapping.source}"
+                            $targetDir = "${env.WORKSPACE}\\${mapping.target}"
                             
-                            if (filePath.startsWith(sourceDir) && (changeType == "M" || changeType == "A")) {
-                                def fileName = filePath.substring(filePath.lastIndexOf('/') + 1)
-                                def destFilePath = "${targetDir}/${fileName}"
-                                
-                                bat "xcopy /Y \"${workspace}/${filePath}\" \"${destFilePath}\""
-                                echo "Copied ${fileName} to ${destFilePath}."
+                            # Create the target directory if it doesn't exist
+                            if (-not (Test-Path -Path $targetDir)) {
+                                New-Item -Path $targetDir -ItemType Directory
                             }
-                        }
+                            
+                            # Loop through each modified/added .properties file
+                            foreach ($file in $modifiedPropertiesFiles) {
+                                $filePath = Join-Path $sourceDir $file
+                                if (Test-Path -Path $filePath) {
+                                    Copy-Item -Path $filePath -Destination $targetDir
+                                }
+                            }
+                        '''
                     }
                 }
             }
