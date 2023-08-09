@@ -15,7 +15,7 @@ pipeline {
                             echo file
 
                             // Check the containing directories and copy files accordingly
-                            if (file.startsWith('folder1/conf')) {
+                            if (file.startsWith('folder1\\conf')) {
                                 copyFile(file, "D:\\northtar\\${getFilenameFromPath(file)}")
                             } else if (file.startsWith('folder2/admin')) {
                                 copyFile(file, "D:\\northstar\\classes\\${getFilenameFromPath(file)}")
