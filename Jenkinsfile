@@ -10,7 +10,7 @@ pipeline {
                     def changes = sh(script: "git diff --name-status HEAD^..HEAD", returnStdout: true).trim().split('\n')
                     
                     def copyRules = [
-                        ["source": "${workspace}folder1\\conf", "target": "D:\\northstar\\sibisoft1"],
+                        ["source": "${workspace}\\folder1\\conf", "target": "D:\\northstar\\sibisoft1"],
                         ["source": "folder2", "target": "D:\\northstar\\sibisoft2"],
                         // Add more rules as needed
                     ]
