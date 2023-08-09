@@ -7,7 +7,7 @@ pipeline {
                 script {
                     def workspacePath = "${env.WORKSPACE}"
                     def directories = [
-                        ['sourceDir': 'folder1\\conf\\', 'targetDir': 'D:\\northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\events\\struts'],
+                        ['sourceDir': 'folder1/conf/', 'targetDir': 'D:\\northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\events\\struts'],
                         ['sourceDir': 'folder2', 'targetDir': 'D:\\northstar\\webINF']
                         // Add more directory mappings as needed
                     ]
@@ -17,7 +17,7 @@ pipeline {
                     echo "Changed Files: ${changedFiles}"
 
                     for (dirMapping in directories) {
-                        def sourceDir = "${workspacePath}\\${dirMapping.sourceDir}"
+                        def sourceDir = "${workspacePath}${File.separator}${dirMapping.sourceDir}".replace("/", File.separator)
                         def targetDir = dirMapping.targetDir
                         echo "Source Directory: ${sourceDir}"
                         echo "Target Directory: ${targetDir}"
@@ -25,7 +25,7 @@ pipeline {
                         // Filter for .properties files in the source directory and its subdirectories
                         def relevantFiles = []
                         for (file in changedFiles) {
-                            if (file.startsWith("${dirMapping.sourceDir}") && file.endsWith('.properties')) {
+                            if (file.startsWith(sourceDir) && file.endsWith('.properties')) {
                                 relevantFiles.add(file)
                             } else {
                                 echo "Skipped: $file"
@@ -41,10 +41,10 @@ pipeline {
 
                             // Copy the relevant files to the target directory
                             for (file in relevantFiles) {
-                                def relativePath = file - dirMapping.sourceDir
-                                def destinationPath = "${targetDir}\\${relativePath}"
-                                echo "Copying ${sourceDir}\\${relativePath} to ${destinationPath}"
-                                bat(script: "copy \"${sourceDir}\\${relativePath}\" \"${destinationPath}\"")
+                                def relativePath = file - sourceDir
+                                def destinationPath = "${targetDir}${File.separator}${relativePath}"
+                                echo "Copying ${sourceDir}${File.separator}${relativePath} to ${destinationPath}"
+                                bat(script: "copy \"${sourceDir}${File.separator}${relativePath}\" \"${destinationPath}\"")
                             }
                         } else {
                             echo "No relevant files found for ${dirMapping.sourceDir}."
