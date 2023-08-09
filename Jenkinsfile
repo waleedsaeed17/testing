@@ -22,11 +22,11 @@ pipeline {
                         echo "Source Directory: ${sourceDir}"
                         echo "Target Directory: ${targetDir}"
 
-                        // Use ant directory scanner to match files in the source directory and its subdirectories
+                        // Use findFiles step to match files in the source directory and its subdirectories
                         def relevantFiles = []
                         for (file in changedFiles) {
-                            def scanner = new hudson.util.DirScanner.Glob(file)
-                            if (scanner.isDescendantOf(sourceDir) && file.endsWith('.properties')) {
+                            def filesFound = findFiles(glob: "${sourceDir}${file}")
+                            if (!filesFound.isEmpty() && file.endsWith('.properties')) {
                                 relevantFiles.add(file)
                             } else {
                                 echo "Skipped: $file"
