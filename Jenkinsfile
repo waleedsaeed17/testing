@@ -7,8 +7,8 @@ pipeline {
             steps {
                 script {
                     // Define source and target directories
-                    def sourceDirectories = ['source_dir_1', '${worspace}\\folder1\\conf'] // Add your source directories here
-                    def targetDirectories = ['target_dir_1', 'D:\\northstar'] // Add your target directories here
+                    def sourceDirectories = ['folder1\\conf'] // Add your source directories here
+                    def targetDirectories = ['D:\\northstar']
                     
                     
                     // Iterate over source directories
