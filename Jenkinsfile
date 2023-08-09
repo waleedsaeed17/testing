@@ -17,7 +17,8 @@ pipeline {
                     echo "Changed Files: ${changedFiles}"
 
                     for (dirMapping in directories) {
-                        def sourceDir = "${workspacePath}\\${dirMapping.sourceDir}".replace("/", "\\")
+                        //def sourceDir = "${workspacePath}\\${dirMapping.sourceDir}".replace("/", "\\")
+                        def sourceDir = "${workspacePath}/${dirMapping.sourceDir}".replace("\\", "/") // Replace backslashes with forward slashes
                         def targetDir = dirMapping.targetDir
                         echo "Source Directory: ${sourceDir}"
                         echo "Target Directory: ${targetDir}"
