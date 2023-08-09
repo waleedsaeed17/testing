@@ -22,11 +22,10 @@ pipeline {
                         echo "Source Directory: ${sourceDir}"
                         echo "Target Directory: ${targetDir}"
 
-                        // Use findFiles step to match files in the source directory and its subdirectories
+                        // Filter for .properties files in the source directory and its subdirectories
                         def relevantFiles = []
                         for (file in changedFiles) {
-                            def filesFound = findFiles(glob: "${sourceDir}${file}")
-                            if (!filesFound.isEmpty() && file.endsWith('.properties')) {
+                            if (file.startsWith(sourceDir) && file.endsWith('.properties')) {
                                 relevantFiles.add(file)
                             } else {
                                 echo "Skipped: $file"
