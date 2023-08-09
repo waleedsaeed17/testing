@@ -13,7 +13,7 @@ pipeline {
                     if (propertiesFilesEvents || propertiesFilesAdmin) {
                         if (propertiesFilesEvents) {
                             // Copy the modified/added .properties files in 'events' to target directory
-                            bat "xcopy /Y /I /E ${workspace}\\folder1\\*.properties ${workspace}\\target_directory_events\\"
+                            bat "xcopy /Y /I /E ${workspace}\\folder2\\*.properties ${workspace}\\target_directory_events\\"
                         }
                         if (propertiesFilesAdmin) {
                             // Copy the modified/added .properties files in 'admin' to target directory
