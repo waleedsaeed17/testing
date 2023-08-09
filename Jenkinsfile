@@ -2,20 +2,39 @@ pipeline {
     agent {label 'sys'}
 
     stages {
-        stage('Find and Copy Modified .properties Files') {
+
+        stage('Identify and Copy Files') {
             steps {
                 script {
-                    // Get the list of modified or added .properties files since the last pull
-                    def modifiedFilesEvents = bat(returnStdout: true, script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD')
-                    def propertiesFiles = modifiedFilesEvents.readLines().findAll { it.endsWith('.properties') }
-
-                    if (propertiesFiles) {
-                        // Copy the modified/added .properties files to a target directory
-                        propertiesFiles.each { propertyFile ->
-                            bat "xcopy /Y /I ${workspace}\\folder1\\${propertyFile} D:\\northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\events\\struts"
+                    def workspacePath = "${env.WORKSPACE}"
+                    def directories = [
+                        ['sourceDir': 'folder1\\', 'targetDir': 'D:\\northstar\\classes'],
+                        ['sourceDir': 'folder2\\', 'targetDir': 'D:\\northstar\\webINF']
+                        // Add more directory mappings as needed
+                    ]
+                    
+                    // Get the list of changed .properties files
+                    def changedFiles = bat(script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD', returnStdout: true).trim().split("\\r?\\n")
+                    
+                    for (dirMapping in directories) {
+                        def sourceDir = "${workspacePath}\\${dirMapping.sourceDir}"
+                        def targetDir = dirMapping.targetDir
+                        
+                        def relevantFiles = []
+                        for (file in changedFiles) {
+                            if (file.startsWith("${dirMapping.sourceDir}/") && file.endsWith('.properties')) {
+                                relevantFiles.add(file)
+                            }
                         }
-                    } else {
-                        echo "No modified or added .properties files found in 'events' directory."
+                        
+                        echo "Relevant Files for ${dirMapping.sourceDir}: ${relevantFiles}"
+                        
+                        // Copy the relevant files to the target directory
+                        for (file in relevantFiles) {
+                            def fileName = file.substring(file.lastIndexOf('/') + 1)
+                            def destinationPath = "${targetDir}\\${fileName}"
+                            bat(script: "xcopy /Y /I /E ${sourceDir}\\${fileName} ${destinationPath}")
+                        }
                     }
                 }
             }
