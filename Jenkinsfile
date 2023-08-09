@@ -1,50 +1,42 @@
 pipeline {
-    agent { label 'sys' }
+    agent {label 'sys'}
 
     stages {
-        stage('Identify and Copy Files') {
+
+        stage('Check and Copy Files') {
             steps {
                 script {
-                    def workspacePath = "${env.WORKSPACE}"
-                    def directories = [
-                        ['sourceDir': 'folder1\\conf\\', 'targetDir': 'D:\\northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\events\\struts'],
-                        ['sourceDir': 'folder2', 'targetDir': 'D:\\northstar\\webINF']
-                        // Add more directory mappings as needed
-                    ]
+                    def workspacePath = env.WORKSPACE
+                    def confPath = "${workspacePath}\\folder1\\conf"
+                    def adminConfPath = "${workspacePath}\\conf\\admin"
+                    def banquetConfPath = "${workspacePath}\\conf\\banquet"
+                    def destinationPathEvents = "D:\\\\northstar\\\\WEB-INF\\\\classes\\\\com\\\\sibisoft\\\\northstar\\\\events\\\\struts"
+                    def destinationPathAdmin = "D:\\\\northstar\\\\WEB-INF\\\\classes\\\\com\\\\sibisoft\\\\northstar\\\\admin\\\\struts"
+                    def destinationPathBanquet = "D:\\\\northstar\\\\WEB-INF\\\\classes\\\\com\\\\sibisoft\\\\northstar\\\\banquet\\\\struts"
 
-                    // Get the list of changed .properties files with added and modified filter
-                    def changedFiles = bat(script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD', returnStdout: true).trim().split("\\r?\\n")
-                    echo "Changed Files: ${changedFiles}"
+                    // List new and modified files with ".properties" extension
+                    def changes = bat(script: 'git diff --name-status HEAD@{1} HEAD', returnStdout: true).trim().split('\r\n')
 
-                    for (dirMapping in directories) {
-                        def sourceDir = "${workspacePath}\\${dirMapping.sourceDir}"
-                        def targetDir = dirMapping.targetDir
-                        echo "Source Directory: ${sourceDir}"
-                        echo "Target Directory: ${targetDir}"
+                    // Iterate through the changes and copy relevant ".properties" files
+                    changes.each { change ->
+                        def status = change.take(1)
+                        def filePath = change.drop(2)
 
-                        // Filter for .properties files in the source directory and its subdirectories
-                        def relevantFiles = []
-                        for (file in changedFiles) {
-                            if (file.startsWith("${dirMapping.sourceDir}") && file.endsWith('.properties')) {
-                                relevantFiles.add(file)
+                        if (status == 'A' || status == 'M') {
+                            def sourceFile = "${workspacePath}\\${filePath}"
+
+                            if (filePath.endsWith('.properties')) {
+                                if (filePath.startsWith('folder1/conf/')) {
+                                    def destinationFile = "${destinationPathEvents}\\${filePath}"
+                                    bat "xcopy /Y \"${sourceFile}\" \"${destinationFile}\""
+                                } else if (filePath.startsWith('conf/admin/')) {
+                                    def destinationFile = "${destinationPathAdmin}\\${filePath}"
+                                    bat "xcopy /Y \"${sourceFile}\" \"${destinationFile}\""
+                                } else if (filePath.startsWith('conf/banquet/')) {
+                                    def destinationFile = "${destinationPathBanquet}\\${filePath}"
+                                    bat "xcopy /Y \"${sourceFile}\" \"${destinationFile}\""
+                                }
                             }
-                        }
-
-                        echo "Relevant Files for ${dirMapping.sourceDir}: ${relevantFiles}"
-
-                        if (!relevantFiles.isEmpty()) {
-                            // Create the target directory if it doesn't exist
-                            bat(script: "if not exist \"${targetDir}\" mkdir \"${targetDir}\"")
-
-                            // Copy the relevant files to the target directory
-                            for (file in relevantFiles) {
-                                def relativePath = file - dirMapping.sourceDir
-                                def destinationPath = "${targetDir}\\${relativePath}"
-                                echo "Copying ${sourceDir}\\${relativePath} to ${destinationPath}"
-                                bat(script: "copy \"${sourceDir}\\${relativePath}\" \"${destinationPath}\"")
-                            }
-                        } else {
-                            echo "No relevant files found for ${dirMapping.sourceDir}."
                         }
                     }
                 }
