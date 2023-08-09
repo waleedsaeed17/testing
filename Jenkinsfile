@@ -3,26 +3,23 @@ pipeline {
 
     stages {
 
-        stage('List and Copy Files') {
+        stage('Fetch Modified and Added .properties Files') {
             steps {
                 script {
-                    // Define source and target directories
-                    def sourceDirectories = ['folder1\\conf'] // Add your source directories here
-                    def targetDirectories = ['D:\\northstar']
-                    
-                    
-                    // Iterate over source directories
-                    for (int i = 0; i < sourceDirectories.size(); i++) {
-                        def sourceDir = sourceDirectories[i]
-                        def targetDir = targetDirectories[i]
-                        
-                        // List new and modified files
-                        def diffOutput = bat(script: "git diff --name-only --diff-filter=AM HEAD@{1} HEAD ${sourceDir}", returnStdout: true).trim()
-                        def filesToCopy = diffOutput.readLines()
-                        
-                        // Copy files to target directory
-                        for (String fileToCopy : filesToCopy) {
-                            bat "robocopy ${sourceDir} ${targetDir} ${fileToCopy}"
+                    def modifiedAndAddedFiles = bat(script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD', returnStdout: true).trim()
+                    def filesArray = modifiedAndAddedFiles.split('\r\n')
+
+                    echo "Modified and Added .properties Files:"
+                    for (String file : filesArray) {
+                        if (file.endsWith('.properties')) {
+                            echo file
+
+                            // Check the containing directories and copy files accordingly
+                            if (file.startsWith('folder1\conf')) {
+                                bat "xcopy /Y \"${file}\" \"D:\\northtar\\\\${file.substring('folder1/conf/'.length())}\""
+                            } else if (file.startsWith('folder2/admin')) {
+                                bat "xcopy /Y \"${file}\" \"D:\\northstar\\\\classes\\\\${file.substring('folder2/admin/'.length())}\""
+                            }
                         }
                     }
                 }
