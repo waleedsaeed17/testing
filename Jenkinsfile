@@ -22,10 +22,11 @@ pipeline {
                         echo "Source Directory: ${sourceDir}"
                         echo "Target Directory: ${targetDir}"
 
-                        // Filter for .properties files in the source directory and its subdirectories
+                        // Use ant directory scanner to match files in the source directory and its subdirectories
                         def relevantFiles = []
                         for (file in changedFiles) {
-                            if (file.startsWith(sourceDir) && file.endsWith('.properties')) {
+                            def scanner = new hudson.util.DirScanner.Glob(file)
+                            if (scanner.isDescendantOf(sourceDir) && file.endsWith('.properties')) {
                                 relevantFiles.add(file)
                             } else {
                                 echo "Skipped: $file"
