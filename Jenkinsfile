@@ -1,41 +1,51 @@
 pipeline {
-    agent {label 'sys'}
-    
+    agent { label 'sys' }
+
     stages {
-        
-        stage('Copy Modified Properties Files') {
+        stage('Identify and Copy Files') {
             steps {
                 script {
-                    // Define a list of source and target directories
-                    def directoryMappings = [
-                        [source: 'folder1\\conf', target: 'D:\\northstar'],
-                        [source: 'source_dir_2', target: 'target_dir_2']
-                        // Add more mappings as needed
+                    def workspacePath = "${env.WORKSPACE}"
+                    def directories = [
+                        ['sourceDir': 'folder1\\conf\\', 'targetDir': 'D:\\northstar\\WEB-INF\\classes\\com\\sibisoft\\northstar\\events\\struts'],
+                        ['sourceDir': 'folder2', 'targetDir': 'D:\\northstar\\webINF']
+                        // Add more directory mappings as needed
                     ]
-                    
-                    // Get the list of modified/added .properties files using git diff
-                    def modifiedPropertiesFiles = bat(script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD | findstr /R "\\.properties$"', returnStdout: true).trim().split('\r\n')
-                    
-                    // Loop through each directory mapping
-                    directoryMappings.each { mapping ->
-                        // Use PowerShell to copy modified/added .properties files
-                        powershell '''
-                            $sourceDir = "${env.WORKSPACE}\\${mapping.source}"
-                            $targetDir = "${env.WORKSPACE}\\${mapping.target}"
-                            
-                            # Create the target directory if it doesn't exist
-                            if (-not (Test-Path -Path $targetDir)) {
-                                New-Item -Path $targetDir -ItemType Directory
+
+                    // Get the list of changed .properties files with added and modified filter
+                    def changedFiles = bat(script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD', returnStdout: true).trim().split("\\r?\\n")
+                    echo "Changed Files: ${changedFiles}"
+
+                    for (dirMapping in directories) {
+                        def sourceDir = "${workspacePath}\\${dirMapping.sourceDir}"
+                        def targetDir = dirMapping.targetDir
+                        echo "Source Directory: ${sourceDir}"
+                        echo "Target Directory: ${targetDir}"
+
+                        // Filter for .properties files in the source directory and its subdirectories
+                        def relevantFiles = []
+                        for (file in changedFiles) {
+                            if (file.startsWith("${dirMapping.sourceDir}") && file.endsWith('.properties')) {
+                                relevantFiles.add(file)
                             }
-                            
-                            # Loop through each modified/added .properties file
-                            foreach ($file in $modifiedPropertiesFiles) {
-                                $filePath = Join-Path $sourceDir $file
-                                if (Test-Path -Path $filePath) {
-                                    Copy-Item -Path $filePath -Destination $targetDir
-                                }
+                        }
+
+                        echo "Relevant Files for ${dirMapping.sourceDir}: ${relevantFiles}"
+
+                        if (!relevantFiles.isEmpty()) {
+                            // Create the target directory if it doesn't exist
+                            bat(script: "if not exist \"${targetDir}\" mkdir \"${targetDir}\"")
+
+                            // Copy the relevant files to the target directory
+                            for (file in relevantFiles) {
+                                def relativePath = file - dirMapping.sourceDir
+                                def destinationPath = "${targetDir}\\${relativePath}"
+                                echo "Copying ${sourceDir}\\${relativePath} to ${destinationPath}"
+                                bat(script: "copy \"${sourceDir}\\${relativePath}\" \"${destinationPath}\"")
                             }
-                        '''
+                        } else {
+                            echo "No relevant files found for ${dirMapping.sourceDir}."
+                        }
                     }
                 }
             }
