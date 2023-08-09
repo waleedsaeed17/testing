@@ -27,9 +27,12 @@ pipeline {
                         for (file in changedFiles) {
                             if (file.startsWith("${dirMapping.sourceDir}") && file.endsWith('.properties')) {
                                 relevantFiles.add(file)
+                            } else {
+                                echo "Skipped: $file"
                             }
                         }
 
+                        echo "All Changed Files: ${changedFiles}"
                         echo "Relevant Files for ${dirMapping.sourceDir}: ${relevantFiles}"
 
                         if (!relevantFiles.isEmpty()) {
