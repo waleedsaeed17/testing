@@ -2,7 +2,7 @@ pipeline {
     agent {label 'sys'}
 
     stages {
-        
+
         stage('Get Changed Files') {
             steps {
                 script {
@@ -27,7 +27,7 @@ pipeline {
                     }
 
                     // Iterate through changed files and copy matching files to D:\northstar
-                    changedFiles.each { file ->
+                    for (def file in changedFiles) {
                         // Check if the file path matches the specified pattern
                         if (file =~ /.*folder1\\\\conf.*/) {
                             // Extract the filename from the path
