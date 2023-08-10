@@ -16,7 +16,7 @@ pipeline {
                         //echo "File Path: ${backslashPath}"
                         
                         // Check if the file path contains 'folder1\\conf'
-                        if (backslashPath.contains('folder1\\conf')) {
+                        if (backslashPath.contains('folder1\\conf') && file.endsWith('.properties')) {
                             // Copy the file to D:\northstar
                             bat "xcopy /Y ${backslashPath} D:\\northstar\\"
                         }
