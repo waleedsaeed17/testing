@@ -22,7 +22,7 @@ pipeline {
                         }
                         if (backslashPath.contains('folder2\\admin')) {
                             // Copy the file to D:\northstar
-                            bat "xcopy /Y ${backslashPath} D:\\northstar\\"
+                            bat "xcopy /Y ${backslashPath} D:\\northstar\\admin\\"
                         }
                     }
                 }
