@@ -7,7 +7,7 @@ pipeline {
             steps {
                 script {
                     // Get the list of added and modified files in the specified directory
-                    def changedFiles = bat(script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD folder1\\conf', returnStdout: true).trim()
+                    def changedFiles = bat(script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD folder1\conf', returnStdout: true).trim()
                     
                     // Copy changed files to the destination folder if any
                     if (!changedFiles.isEmpty()) {
