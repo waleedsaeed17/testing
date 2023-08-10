@@ -21,7 +21,7 @@ pipeline {
                     // Print the list of changed file paths
                     echo "Changed files:"
                     changedFiles.each { file ->
-                        //echo file
+                        echo file
                     }
                 }
             }
