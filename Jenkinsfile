@@ -11,8 +11,8 @@ pipeline {
                     
                     // Copy changed files from folder1/conf to D:/northstar
                     for (file in changedFiles) {
-                        if (file.contains('folder1/conf')) {
-                            sh "cp ${file.split()[1]} D:/northstar/"
+                        if (file.contains('folder1\\conf')) {
+                            sh "cp ${file.split()[1]} D:\\northstar\\"
                         }
                     }
                 }
