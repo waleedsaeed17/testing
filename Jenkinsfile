@@ -1,29 +1,19 @@
 pipeline {
     agent {label 'sys'}
-    
+ 
     stages {
-        
-        stage('Pull and Copy') {
+        stage('Clone and Check') {
             steps {
                 script {
-                    // Get the list of added and modified files in the specified directory
-                    def changedFiles = bat(script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD folder1\\conf', returnStdout: true).trim()
+                    // Get a list of modified or added files
+                    def diffOutput = sh(script: 'git diff --name-status HEAD@{1} HEAD', returnStdout: true).trim()
+                    def changedFiles = diffOutput.readLines().findAll { it.startsWith('M') || it.startsWith('A') }
                     
-                    // Copy changed files to the destination folder if any
-                    if (!changedFiles.isEmpty()) {
-                        def destinationFolder = 'D:\\northstar'
-                        
-                        // Create the destination folder if it doesn't exist
-                        bat "mkdir ${destinationFolder}"
-                        
-                        // Copy changed files to the destination folder
-                        changedFiles.split('\r\n').each { file ->
-                            bat "copy \"${file}\" \"${destinationFolder}\""
+                    // Copy changed files from folder1/conf to D:/northstar
+                    for (file in changedFiles) {
+                        if (file.contains('folder1/conf')) {
+                            sh "cp ${file.split()[1]} D:/northstar/"
                         }
-                        
-                        echo "Copied changed files to ${destinationFolder}"
-                    } else {
-                        echo "No changed files found in conf/admin directory."
                     }
                 }
             }
