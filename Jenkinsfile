@@ -1,20 +1,27 @@
 pipeline {
     agent {label 'sys'}
-    
+
     stages {
-        
-        stage('Check for Changes') {
+
+        stage('Get Changed Files') {
             steps {
                 script {
-                    // Get the list of changed files since the last build
-                    def changedFiles = bat(returnStdout: true, script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD')
+                    def changeLog = currentBuild.changeSets[0]
+                    def changedFiles = []
                     
-                    // Split the changed files into a list
-                    def filesToCopy = changedFiles.trim().split('\n').findAll { it.startsWith('folder1\\conf\\') }
-                    
-                    // Copy the changed files to D:\northstar
-                    filesToCopy.each { file ->
-                        bat(script: "copy ${file.replace('\\', '\\\\')} D:\\\\northstar\\\\")
+                    // Loop through all the individual changes in the current build
+                    changeLog.items.each { change ->
+                        // Loop through all affected paths in the change
+                        change.affectedPaths.each { path ->
+                            // Add the changed file path to the list
+                            changedFiles.add(path)
+                        }
+                    }
+
+                    // Print the list of changed file paths
+                    echo "Changed files:"
+                    changedFiles.each { file ->
+                        echo file
                     }
                 }
             }
