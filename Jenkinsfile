@@ -1,45 +1,25 @@
-import java.nio.file.*
-
 pipeline {
-    agent {label 'sys'}
-
+    agent {
+        label "sys" // Replace with the label of your Windows agent
+    }
+    
     stages {
-
-
-        stage('Get Changed Files') {
+        
+        stage('Show Changed Files') {
             steps {
                 script {
-                    def changeLog = currentBuild.changeSets[0]
-                    def changedFiles = []
+                    // Use PowerShell to get the list of changed files
+                    def changedFiles = powershell(script: 'git diff --name-only HEAD^', returnStdout: true).trim()
                     
-                    // Loop through all the individual changes in the current build
-                    changeLog.items.each { change ->
-                        // Loop through all affected paths in the change
-                        change.affectedPaths.each { path ->
-                            // Replace forward slashes with single backslashes
-                            def filePath = path.replaceAll("/", "\\\\")
-                            // Add the changed file path to the list
-                            changedFiles.add(filePath)
-                        }
-                    }
-
-                    // Print the list of changed file paths
+                    // Convert newline-separated string to list
+                    def changedFilesList = changedFiles.split('\n')
+                    
                     echo "Changed files:"
-                    changedFiles.each { file ->
-                        echo file
-                    }
-
-                    // Iterate through changed files and copy matching files to D:\northstar
-                    for (def file in changedFiles) {
-                        // Check if the file path matches the specified pattern
-                        if (file =~ /.*folder1\\conf\\.*/) {
-                            // Extract the filename from the path
-                            def fileName = file.tokenize("\\")[-1]
-                            // Copy the file to D:\northstar directory
-                            def srcPath = Paths.get(file)
-                            def destPath = Paths.get("D:\\northstar\\")
-                            Files.copy(srcPath, destPath, StandardCopyOption.REPLACE_EXISTING)
-                        }
+                    
+                    // Print the changed files with full path
+                    for (file in changedFilesList) {
+                        def fullPath = powershell(script: "(Get-Item -Path ${file}).FullName", returnStdout: true).trim()
+                        echo "${fullPath}"
                     }
                 }
             }
