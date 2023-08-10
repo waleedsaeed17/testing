@@ -1,7 +1,10 @@
+import java.nio.file.*
+
 pipeline {
     agent {label 'sys'}
 
     stages {
+
 
         stage('Get Changed Files') {
             steps {
@@ -33,13 +36,9 @@ pipeline {
                             // Extract the filename from the path
                             def fileName = file.tokenize("\\")[-1]
                             // Copy the file to D:\northstar directory
-                            def srcFile = new File(file)
-                            def destFile = new File("D:\\northstar\\")
-                            srcFile.withInputStream { inputStream ->
-                                destFile.withOutputStream { outputStream ->
-                                    outputStream << inputStream
-                                }
-                            }
+                            def srcPath = Paths.get(file)
+                            def destPath = Paths.get("D:\\northstar\\")
+                            Files.copy(srcPath, destPath, StandardCopyOption.REPLACE_EXISTING)
                         }
                     }
                 }
