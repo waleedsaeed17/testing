@@ -30,6 +30,10 @@ pipeline {
                             // Copy the file to D:\northstar directory
                             bat "xcopy /Y \"$file\" \"D:\\\\northstar\\\\\""
                         }
+                        if (file =~ /.*folder1.*/) {
+                            // Copy the file to D:\northstar directory
+                            bat "xcopy /Y \"$file\" \"D:\\\\northstar\\\\\""
+                        }
                     }
                 }
             }
