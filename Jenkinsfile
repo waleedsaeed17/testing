@@ -12,7 +12,7 @@ pipeline {
                     
                     // Iterate through each changed file and print its path with backslashes
                     changedFiles.split('\n').each { filePath ->
-                        def backslashPath = filePath.replaceAll('/', '\\')
+                        def backslashPath = filePath.replaceAll('/', '\\\\\\\\')
                         echo "File Path: ${backslashPath}"
                     }
                 }
