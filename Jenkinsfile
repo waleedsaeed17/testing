@@ -15,7 +15,7 @@ pipeline {
                         echo file
                         if (file.contains('folder1\\conf')) {
                             def fileName = file.split()[1]
-                            bat "copy workspace\\${fileName} D:\\northstar\\"
+                            bat "copy ${fileName} D:\\northstar\\"
                         }
                     }
                 }
