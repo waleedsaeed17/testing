@@ -13,8 +13,10 @@ pipeline {
                     changeLog.items.each { change ->
                         // Loop through all affected paths in the change
                         change.affectedPaths.each { path ->
+                            // Replace forward slashes with backward slashes
+                            def filePath = path.replaceAll("/", "\\")
                             // Add the changed file path to the list
-                            changedFiles.add(path)
+                            changedFiles.add(filePath)
                         }
                     }
 
