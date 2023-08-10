@@ -13,7 +13,7 @@ pipeline {
                     echo "Changed files:"
                     for (file in changedFiles) {
                         echo file
-                        if (file.contains('folder1/conf/')) {
+                        if (file.contains('folder1\\\\conf')) {
                             def fileName = file.split()[1]
                             bat "copy workspace\\${fileName} D:\\northstar\\"
                         }
