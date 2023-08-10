@@ -2,7 +2,7 @@ pipeline {
     agent {label 'sys'}
 
     stages {
-
+        
         stage('Get Changed Files') {
             steps {
                 script {
@@ -24,15 +24,16 @@ pipeline {
                     echo "Changed files:"
                     changedFiles.each { file ->
                         echo file
+                    }
 
+                    // Iterate through changed files and copy matching files to D:\northstar
+                    changedFiles.each { file ->
                         // Check if the file path matches the specified pattern
                         if (file =~ /.*folder1\\\\conf.*/) {
+                            // Extract the filename from the path
+                            def fileName = file.tokenize("\\")[-1]
                             // Copy the file to D:\northstar directory
-                            bat "xcopy /Y \"$file\" \"D:\\\\northstar\\\\\""
-                        }
-                        if (file =~ /.*folder1.*/) {
-                            // Copy the file to D:\northstar directory
-                            bat "xcopy /Y \"$file\" \"D:\\\\northstar\\\\\""
+                            bat "xcopy /Y \"$file\" \"D:\\\\northstar\\\\$fileName\""
                         }
                     }
                 }
