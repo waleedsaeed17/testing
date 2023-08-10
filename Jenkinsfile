@@ -11,7 +11,7 @@ pipeline {
 
                     // Copy changed files from folder1/conf to D:/northstar
                     for (file in changedFiles) {
-                        if (file.contains('folder1\\conf')) {
+                        if (file.contains('folder1\conf')) {
                             def fileName = file.split()[1]
                             bat "copy workspace\\${fileName} D:\\northstar\\"
                         }
