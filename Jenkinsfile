@@ -7,7 +7,7 @@ pipeline {
             steps {
                 script {
                     // Get the list of changed files since the last build
-                    def changedFiles = bat(returnStatus: true, script: 'git diff --name-only HEAD^ HEAD')
+                    def changedFiles = bat(returnStatus: true, script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD')
                     
                     // Check if any changed file is in the 'folder1\conf' directory
                     def filesToCopy = changedFiles.tokenize('\n').findAll { it.startsWith('folder1\\conf\\') }
