@@ -1,22 +1,20 @@
 pipeline {
     agent {label 'sys'}
-
+    
     stages {
-        stage('Clone and Check') {
+        
+        stage('Check for Changes') {
             steps {
                 script {
-                    // Get a list of modified or added files
-                    def diffOutput = bat(script: 'git diff --name-status HEAD@{1} HEAD', returnStdout: true).trim()
-                    def changedFiles = diffOutput.readLines().findAll { it.startsWith('M') || it.startsWith('A') }
-
-                    // Copy changed files from folder1/conf to D:/northstar
-                    echo "Changed files:"
-                    for (file in changedFiles) {
-                        echo file
-                        if (file.contains('folder1\\conf')) {
-                            def fileName = file.split()[1]
-                            bat "copy ${fileName} D:\\northstar\\"
-                        }
+                    // Get the list of changed files since the last build
+                    def changedFiles = bat(returnStatus: true, script: 'git diff --name-only HEAD^ HEAD')
+                    
+                    // Check if any changed file is in the 'folder1\conf' directory
+                    def filesToCopy = changedFiles.tokenize('\n').findAll { it.startsWith('folder1\\conf\\') }
+                    
+                    // Copy the changed files to D:\northstar
+                    filesToCopy.each { file ->
+                        bat(script: "copy ${file.replace('\\', '\\\\')} D:\\\\northstar\\\\")
                     }
                 }
             }
