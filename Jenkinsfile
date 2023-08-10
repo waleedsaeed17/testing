@@ -33,7 +33,7 @@ pipeline {
                             // Extract the filename from the path
                             def fileName = file.tokenize("\\")[-1]
                             // Copy the file to D:\northstar directory
-                            bat "xcopy /Y \"$file\" \"D:\\\\northstar\\\\$fileName\""
+                            bat "xcopy /Y \"$file\" \"D:\\\\northstar\\\\\""
                         }
                     }
                 }
