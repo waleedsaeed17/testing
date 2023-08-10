@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        label "sys" // Replace with the label of your Windows agent
-    }
+    agent {label 'sys'}
     
     stages {
         
