@@ -26,7 +26,8 @@ pipeline {
                             relatedFiles.split('\n').each { relatedFileLine ->
                                 def relatedFileName = relatedFileLine.tokenize('\\').last().trim()
                                 echo "Copying related file: ${relatedFileName}"
-                                bat "xcopy /Y D:\\northstar\\WEB-INF\\classes\\${relatedFileName} D:\\myfiles\\"
+                                bat 'xcopy /Y "D:\\northstar\\WEB-INF\\classes\\hello*" "D:\\myfiles\\" > NUL'
+
                             }
                         }
                     }
