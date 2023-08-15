@@ -5,7 +5,9 @@ pipeline {
         stage('Copy Related Files') {
             steps {
                 script {
-                    def changedJavaFiles = bat(script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD' | , returnStdout: true).trim()
+                    def changedFiles = bat(script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD', returnStdout: true).trim()
+
+
                     echo "Changed Java Files:"
                     echo changedJavaFiles
                     
