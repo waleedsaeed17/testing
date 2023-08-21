@@ -2,6 +2,7 @@ pipeline {
     agent {label 'sys'}
 
     stages {
+
         stage('Search and Copy Files') {
             steps {
                 // Run the git diff command to list modified files and print them
@@ -10,7 +11,7 @@ pipeline {
                     def fileList = modifiedFiles.readLines()
 
                     fileList.each { file ->
-                        if (file.startsWith('src\\build') && file.endsWith('.java')) {
+                        if (file.startsWith('src\\build') && file.endsWith('xyz.java')) {
                             echo "Modified Java file found: ${file}"
 
                             // Extract the filename without extension (xyz)
@@ -23,9 +24,11 @@ pipeline {
                             if (!searchResultList.empty) {
                                 echo "Matching files found:"
                                 searchResultList.each { matchingFile ->
-                                    echo " - ${matchingFile}"
-                                    // Copy matching files to D:\myfiles directory
-                                    bat "copy \"${matchingFile}\" \"D:\\myfiles\""
+                                    // Replace forward slashes with backslashes in the path
+                                    def matchingFilePath = matchingFile.replace('/', '\\')
+                                    echo " - ${matchingFilePath}"
+                                    // Copy matching files to D:\myfiles directory using xcopy
+                                    bat "xcopy /Y \"${matchingFilePath}\" \"D:\\myfiles\""
                                 }
                             } else {
                                 echo "No matching files found."
