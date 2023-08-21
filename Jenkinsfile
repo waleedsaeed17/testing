@@ -15,7 +15,20 @@ pipeline {
                     changedFiles.split('\n').each { filePath ->
                         def backslashPath = filePath.replaceAll('/', '\\\\')
                         echo "File Path: ${backslashPath}"
-
+                        
+                        // Check if the changed file is in the src/build directory and has a .java extension
+                        if (backslashPath =~ /^src\\build\\.*\.java$/) {
+                            def fileName = backslashPath.replaceAll('.*/(.*\\.java)', '$1')
+                            echo "Detected Java File: ${fileName}"
+                            
+                            // Construct the source and destination paths
+                            def sourcePath = "D:\\northstar\\WEB-INF\\classes\\${fileName}"
+                            def destinationPath = "D:\\myfiles\\${fileName}"
+                            
+                            // Copy the file from source to destination
+                            bat "xcopy /Y \"${sourcePath}\" \"${destinationPath}\""
+                            echo "Copied ${fileName} to ${destinationPath}"
+                        }
                     }
                 }
             }
