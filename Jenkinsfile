@@ -1,45 +1,21 @@
 pipeline {
     agent {label 'sys'}
-
+    
     stages {
-        stage('Search and Copy Files') {
+        stage('Detect and Process Changes') {
             steps {
-                // Run the git diff command to list modified files and print them with backslashes
                 script {
-                    def modifiedFiles = bat(script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD', returnStdout: true).trim()
-                    def fileList = modifiedFiles.readLines()
+                    // Define a variable to hold the list of changed files
+                    def changedFiles = bat(script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD', returnStdout: true).trim()
 
-                    if (!fileList.empty) {
-                        echo "Modified files:"
-                        fileList.each { file ->
-                            // Replace forward slashes with backslashes in the path
-                            def filePath = file.replace('/', '\\')
-                            echo " - ${filePath}"
+                    echo "Changed Files:"
+                    echo changedFiles
 
-                            if (filePath.startsWith('src\\build') && filePath.endsWith('.java')) {
-                                // Extract the filename without extension (xyz)
-                                def baseFileName = filePath.tokenize('\\').last().replaceAll('.java', '')
+                    // Iterate through each changed file and find related files in the specified directory
+                    changedFiles.split('\n').each { filePath ->
+                        def backslashPath = filePath.replaceAll('/', '\\\\')
+                        echo "File Path: ${backslashPath}"
 
-                                // Search for files containing the base file name in D:\northstar\WEB-INF\classes
-                                def searchResults = bat(script: "dir /s /b D:\\northstar\\WEB-INF\\classes\\*${baseFileName}*", returnStdout: true).trim()
-                                def searchResultList = searchResults.readLines()
-
-                                if (!searchResultList.empty) {
-                                    echo "Matching files found:"
-                                    searchResultList.each { matchingFile ->
-                                        // Replace forward slashes with backslashes in the path
-                                        def matchingFilePath = matchingFile.replace('/', '\\')
-                                        echo " - ${matchingFilePath}"
-                                        // Copy matching files to D:\myfiles directory using xcopy
-                                        bat "xcopy /Y \"${matchingFilePath}\" \"D:\\myfiles\""
-                                    }
-                                } else {
-                                    echo "No matching files found."
-                                }
-                            }
-                        }
-                    } else {
-                        echo "No modified files found."
                     }
                 }
             }
