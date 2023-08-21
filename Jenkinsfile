@@ -13,7 +13,7 @@ pipeline {
                     // Iterate through each changed file and find related files in the specified directory
                     changedFiles.split('\n').each { filePath ->
                         def backslashPath = filePath.replaceAll('/', '\\\\')
-                        echo "File Path: ${backslashPath}"
+                    echo "File Path: ${backslashPath}"
                         
                         if (backslashPath.startsWith('src\\build') && backslashPath.endsWith('.java')) {
                             def baseFileName = backslashPath.tokenize('\\').last().replaceAll('.java', '')
