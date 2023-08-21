@@ -15,7 +15,7 @@ pipeline {
                         def backslashPath = filePath.replaceAll('/', '\\\\')
                         echo "File Path: ${backslashPath}"
                         
-                        if (backslashPath.startsWith('src\\\\build') && backslashPath.endsWith('.java')) {
+                        if (backslashPath.startsWith('src\\build') && backslashPath.endsWith('.java')) {
                             def baseFileName = backslashPath.tokenize('\\').last().replaceAll('.java', '')
                             
                             def relatedFiles = bat(script: "dir D:\\northstar\\WEB-INF\\classes\\${baseFileName}*", returnStdout: true).trim()
