@@ -2,36 +2,38 @@ pipeline {
     agent {label 'sys'}
     
     stages {
-        stage('Detect and Process Changes') {
+        
+        stage('List and Process Changed Files') {
             steps {
+                // Define the command to run Git diff and capture the output
                 script {
-                    // Define a variable to hold the list of changed files
                     def changedFiles = bat(script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD', returnStdout: true).trim()
-
+                    
                     echo "Changed Files:"
                     echo changedFiles
-
-                    // Iterate through each changed file and find related files in the specified directory
+                    
+                    // Iterate through each changed file and process them
                     changedFiles.split('\n').each { filePath ->
                         def backslashPath = filePath.replaceAll('/', '\\\\')
                         echo "File Path: ${backslashPath}"
                         
-                        // Check if the changed file is in the src/build directory and has a .java extension
-                        if (backslashPath =~ /^src\\build\\.*\.java$/) {
-                            def fileName = backslashPath.replaceAll('.java', '')
-                            echo "Detected Java File: ${fileName}"
+                        // Check if the file is in the specified directory and has a ".java" extension
+                        if (backslashPath.contains("src\\build") && backslashPath.endsWith(".java")) {
+                            // Extract the file name without extension
+                            def fileName = backslashPath.substring(backslashPath.lastIndexOf('\\') + 1, backslashPath.lastIndexOf('.'))
                             
-                            // Construct the source and destination paths
-                            def sourcePath = "D:\\northstar\\WEB-INF\\classes\\${fileName}"
-                            def destinationPath = "D:\\myfiles\\${fileName}"
+                            // Search for files in D:\northstar\WEB-INF\classes with the same name
+                            def searchPattern = "D:\\northstar\\WEB-INF\\classes\\${fileName}*"
                             
-                            // Copy the file from source to destination
-                            bat "xcopy /Y \"${sourcePath}\" \"${destinationPath}\""
-                            echo "Copied ${fileName} to ${destinationPath}"
+                            // Copy matching files to D:\myfiles
+                            bat "xcopy /Y /I \"${searchPattern}\" \"D:\\myfiles\\\""
+                            
+                            echo "Copied files with '${fileName}' prefix to D:\\myfiles\\"
                         }
                     }
                 }
             }
         }
     }
+    
 }
