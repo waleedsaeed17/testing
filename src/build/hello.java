@@ -22,3 +22,4 @@ e
 dw
 dwd
 d
+wd
