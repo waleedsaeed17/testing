@@ -18,7 +18,7 @@ pipeline {
                         
                         // Check if the changed file is in the src/build directory and has a .java extension
                         if (backslashPath =~ /^src\\build\\.*\.java$/) {
-                            def fileName = backslashPath.replaceAll('.*/(.*\\.java)', '$1')
+                            def fileName = backslashPath.replaceAll('.java', '')
                             echo "Detected Java File: ${fileName}"
                             
                             // Construct the source and destination paths
