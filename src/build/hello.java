@@ -27,3 +27,4 @@ wd
 dw
 dwd
 e
+dw
