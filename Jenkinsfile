@@ -29,7 +29,7 @@ pipeline {
                                 //bat "xcopy /Y D:\\northstar\\WEB-INF\\classes\\${relatedFileName} D:\\myfiles\\" > NUL
                                 //bat 'xcopy /Y "D:\\northstar\\WEB-INF\\classes\\"${relatedFileName} "D:\\myfiles\\" > NUL'
                                 //bat "xcopy /Y \"D:\\northstar\\WEB-INF\\classes\\${relatedFileName}\" \"D:\\myfiles\\\"  1>NUL"
-                                bat """xcopy /Y "D:\\northstar\\WEB-INF\\classes\\${relatedFileName}" "D:\\myfiles\\"  1>NUL"""
+                                bat """xcopy /Y "D:\\northstar\\WEB-INF\\classes\\${relatedFileName}" "D:\\myfiles\\"  >NUL"""
 
 
                             }
