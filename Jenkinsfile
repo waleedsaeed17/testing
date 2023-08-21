@@ -1,34 +1,34 @@
 pipeline {
-    agent { label 'sys' }
-    
+    agent {label 'sys'}
+
     stages {
-        stage('Copy Related Files') {
+        stage('Search and Copy Files') {
             steps {
+                // Run the git diff command to list modified files and print them
                 script {
-                    def changedFiles = bat(script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD', returnStdout: true).trim()
+                    def modifiedFiles = bat(script: 'git diff --name-only --diff-filter=AM HEAD@{1} HEAD', returnStdout: true).trim()
+                    def fileList = modifiedFiles.readLines()
 
-                    echo "Changed Files:"
-                    echo changedFiles
+                    fileList.each { file ->
+                        if (file.startsWith('src\\build') && file.endsWith('.java')) {
+                            echo "Modified Java file found: ${file}"
 
-                    // Iterate through each changed file and find related files in the specified directory
-                    changedFiles.split('\n').each { filePath ->
-                        def backslashPath = filePath.replaceAll('/', '\\\\')
-                    echo "File Path: ${backslashPath}"
-                        
-                        if (backslashPath.startsWith('src\\build') && backslashPath.endsWith('.java')) {
-                            def baseFileName = backslashPath.tokenize('\\').last().replaceAll('.java', '')
-                            
-                            def relatedFiles = bat(script: "dir D:\\northstar\\WEB-INF\\classes\\${baseFileName}*", returnStdout: true).trim()
+                            // Extract the filename without extension (xyz)
+                            def baseFileName = file.tokenize('\\').last().replaceAll('.java', '')
 
-                            echo "Related Files:"
-                            echo relatedFiles
-                            
-                            relatedFiles.split('\n').each { relatedFileLine ->
-                                def relatedFileName = relatedFileLine.tokenize('\\').last().trim()
-                                echo "Copying related file: ${relatedFileName}"
-                                bat "xcopy /Y D:\\northstar\\WEB-INF\\classes\\${relatedFileName} D:\\myfiles\\"
+                            // Search for files containing the base file name in D:\northstar\WEB-INF\classes
+                            def searchResults = bat(script: "dir /s /b D:\\northstar\\WEB-INF\\classes\\*${baseFileName}*", returnStdout: true).trim()
+                            def searchResultList = searchResults.readLines()
 
-
+                            if (!searchResultList.empty) {
+                                echo "Matching files found:"
+                                searchResultList.each { matchingFile ->
+                                    echo " - ${matchingFile}"
+                                    // Copy matching files to D:\myfiles directory
+                                    bat "copy \"${matchingFile}\" \"D:\\myfiles\""
+                                }
+                            } else {
+                                echo "No matching files found."
                             }
                         }
                     }
