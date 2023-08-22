@@ -1,5 +1,5 @@
 pipeline {
-    agent {label 'sys'}
+    agent {label 'ui'}
     
     stages {
         
